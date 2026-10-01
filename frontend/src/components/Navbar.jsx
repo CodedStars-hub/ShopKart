@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { getWishlist } from '../services/wishlistService';
+import { useCart } from '../context/useCart';
 
 /**
- * Navbar component for ShopKart.
- * Displays ShopKart branding, navigation links (Home | Products | Wishlist), and Logout button.
- * Triggers POST /customers/logout to clear the HttpOnly session cookie on the backend.
+ * Navbar component for ShopKart (Lab 01 - Lab 05).
+ * Displays branding, navigation (Home | Products | Wishlist | Cart), and Logout button.
+ * Cart count is dynamically consumed from CartContext (representing total units).
  */
 function Navbar({ wishlistCount }) {
   const navigate = useNavigate();
+  const { cartCount } = useCart();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [fetchedCount, setFetchedCount] = useState(null);
 
@@ -35,7 +37,7 @@ function Navbar({ wishlistCount }) {
     };
   }, [wishlistCount]);
 
-  const displayCount = typeof wishlistCount === 'number' ? wishlistCount : fetchedCount;
+  const displayWishlistCount = typeof wishlistCount === 'number' ? wishlistCount : fetchedCount;
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -76,8 +78,17 @@ function Navbar({ wishlistCount }) {
             className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}
           >
             Wishlist
-            {displayCount !== null && displayCount > 0 && (
-              <span className="wishlist-badge">{displayCount}</span>
+            {displayWishlistCount !== null && displayWishlistCount > 0 && (
+              <span className="wishlist-badge">{displayWishlistCount}</span>
+            )}
+          </NavLink>
+          <NavLink
+            to="/cart"
+            className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}
+          >
+            Cart
+            {cartCount > 0 && (
+              <span className="cart-badge">{cartCount}</span>
             )}
           </NavLink>
           <button

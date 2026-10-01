@@ -3,17 +3,19 @@ import { useParams, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { getProductById } from '../services/productService';
 import { getWishlist, addToWishlist, removeFromWishlist } from '../services/wishlistService';
+import { useCart } from '../context/useCart';
 
 /**
- * ProductDetails Page (Lab 03 & Lab 04)
+ * ProductDetails Page (Lab 03, Lab 04 & Lab 05)
  * Route: /products/:id
  *
  * Fetches single product details using MongoDB _id from URL params.
  * Displays large product image, name, description, price, category, stock,
- * and UI-only "Add to Cart" button (per Lab 03 spec).
+ * Wishlist action, and authenticated "Add to Cart" connected to CartContext.
  */
 function ProductDetails() {
   const { id } = useParams();
+  const { addToCart, actionLoadingId, cartItems } = useCart();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,7 +23,14 @@ function ProductDetails() {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [savingWishlist, setSavingWishlist] = useState(false);
   const [wishlistMessage, setWishlistMessage] = useState('');
-  const [addedToCartMessage, setAddedToCartMessage] = useState('');
+  const [cartFeedback, setCartFeedback] = useState('');
+
+  const isAddingToCart = actionLoadingId === product?._id;
+
+  const currentCartItem = cartItems?.find(
+    (item) => (item.product?._id || item.product) === product?._id
+  );
+  const cartQuantity = currentCartItem ? currentCartItem.quantity : 0;
 
   useEffect(() => {
     let isMounted = true;
@@ -106,12 +115,24 @@ function ProductDetails() {
     }
   };
 
-  // Add to Cart handler (UI-only for Lab 03 as specified)
-  const handleAddToCart = () => {
-    setAddedToCartMessage('Item added to cart! (Demo UI)');
+  // Add to Cart handler (Connected to persistent backend via CartContext)
+  const handleAddToCart = async () => {
+    if (!product || isAddingToCart || product.stock <= 0) return;
+
+    const result = await addToCart(product._id);
+    if (result.success) {
+      setCartFeedback(
+        cartQuantity > 0
+          ? `Cart updated! (${cartQuantity + 1} units)`
+          : 'Product added to cart!'
+      );
+    } else {
+      setCartFeedback(result.message);
+    }
+
     setTimeout(() => {
-      setAddedToCartMessage('');
-    }, 2500);
+      setCartFeedback('');
+    }, 3000);
   };
 
   return (
@@ -197,10 +218,10 @@ function ProductDetails() {
                   </div>
                 )}
 
-                {addedToCartMessage && (
+                {cartFeedback && (
                   <div className="alert alert-success details-alert">
                     <span>🛒</span>
-                    <span>{addedToCartMessage}</span>
+                    <span>{cartFeedback}</span>
                   </div>
                 )}
 
@@ -210,9 +231,9 @@ function ProductDetails() {
                     type="button"
                     className="btn btn-primary btn-large add-to-cart-btn"
                     onClick={handleAddToCart}
-                    disabled={product.stock <= 0}
+                    disabled={product.stock <= 0 || isAddingToCart}
                   >
-                    🛒 Add to Cart
+                    {isAddingToCart ? '⏳ Adding to Cart...' : '🛒 Add to Cart'}
                   </button>
 
                   <button

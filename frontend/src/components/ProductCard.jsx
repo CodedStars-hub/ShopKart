@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { addToWishlist, removeFromWishlist } from '../services/wishlistService';
+import { useCart } from '../context/useCart';
 
 /**
- * ProductCard Component (Lab 03 & Lab 04)
+ * ProductCard Component (Lab 03, Lab 04 & Lab 05)
  * Displays product image, name, price, category, stock status, "View Details",
- * and authenticated wishlist toggle action.
+ * "Add to Cart" button (integrated with global CartContext), and Wishlist action.
  */
 function ProductCard({
   product,
@@ -14,23 +15,34 @@ function ProductCard({
   showRemoveButton = false,
   onRemove,
 }) {
-  const [saving, setSaving] = useState(false);
+  const { addToCart, actionLoadingId, cartItems } = useCart();
+
+  const [savingWishlist, setSavingWishlist] = useState(false);
   const [inWishlist, setInWishlist] = useState(isWishlisted);
   const [actionMessage, setActionMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   // Sync prop changes if parent state updates
-  if (isWishlisted !== inWishlist && !saving && !actionMessage) {
+  if (isWishlisted !== inWishlist && !savingWishlist && !actionMessage) {
     setInWishlist(isWishlisted);
   }
+
+  // Per-item loading state for cart mutations
+  const isAddingToCart = actionLoadingId === product._id;
+
+  // Check current item quantity in cart
+  const currentCartItem = cartItems?.find(
+    (item) => (item.product?._id || item.product) === product._id
+  );
+  const cartQuantity = currentCartItem ? currentCartItem.quantity : 0;
 
   const handleWishlistClick = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (saving) return;
+    if (savingWishlist) return;
 
-    setSaving(true);
+    setSavingWishlist(true);
     setActionMessage('');
     setIsError(false);
 
@@ -61,8 +73,7 @@ function ProductCard({
           : 'Failed to update wishlist');
       setActionMessage(msg);
     } finally {
-      setSaving(false);
-      // Automatically clear temporary notification after 3 seconds
+      setSavingWishlist(false);
       setTimeout(() => {
         setActionMessage('');
       }, 3000);
@@ -72,13 +83,33 @@ function ProductCard({
   const handleDirectRemove = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (saving) return;
+    if (savingWishlist) return;
 
     if (onRemove) {
       onRemove(product._id);
     } else {
       handleWishlistClick(e);
     }
+  };
+
+  const handleAddToCartClick = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (isAddingToCart || product.stock <= 0) return;
+
+    const result = await addToCart(product._id);
+    if (!result.success) {
+      setIsError(true);
+      setActionMessage(result.message);
+    } else {
+      setIsError(false);
+      setActionMessage(cartQuantity > 0 ? `Cart: ${cartQuantity + 1} units` : 'Added to Cart!');
+    }
+
+    setTimeout(() => {
+      setActionMessage('');
+    }, 2500);
   };
 
   const isOutOfStock = product.stock <= 0;
@@ -93,11 +124,11 @@ function ProductCard({
             type="button"
             className={`wishlist-icon-btn ${inWishlist ? 'wishlisted' : ''}`}
             onClick={handleWishlistClick}
-            disabled={saving}
+            disabled={savingWishlist}
             title={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
             aria-label="Wishlist action"
           >
-            {saving ? '⏳' : inWishlist ? '♥' : '♡'}
+            {savingWishlist ? '⏳' : inWishlist ? '♥' : '♡'}
           </button>
         )}
       </div>
@@ -131,9 +162,7 @@ function ProductCard({
               isOutOfStock ? 'stock-out' : product.stock < 5 ? 'stock-low' : 'stock-available'
             }`}
           >
-            {isOutOfStock
-              ? 'Out of Stock'
-              : `${product.stock} units left`}
+            {isOutOfStock ? 'Out of Stock' : `${product.stock} units left`}
           </span>
         </div>
 
@@ -146,6 +175,24 @@ function ProductCard({
 
         {/* Card Actions */}
         <div className="product-card-actions">
+          {/* Add to Cart button (Lab 05) */}
+          <button
+            type="button"
+            className="btn btn-primary btn-sm add-cart-btn"
+            onClick={handleAddToCartClick}
+            disabled={isAddingToCart || isOutOfStock}
+          >
+            {isAddingToCart ? (
+              '⏳ Adding...'
+            ) : isOutOfStock ? (
+              'Out of Stock'
+            ) : cartQuantity > 0 ? (
+              `🛒 Add More (${cartQuantity})`
+            ) : (
+              '🛒 Add to Cart'
+            )}
+          </button>
+
           <Link
             to={`/products/${product._id}`}
             className="btn btn-outline btn-sm view-details-btn"
@@ -158,9 +205,9 @@ function ProductCard({
               type="button"
               className="btn btn-outline-danger btn-sm remove-wishlist-btn"
               onClick={handleDirectRemove}
-              disabled={saving}
+              disabled={savingWishlist}
             >
-              {saving ? 'Removing...' : 'Remove from Wishlist'}
+              {savingWishlist ? 'Removing...' : 'Remove from Wishlist'}
             </button>
           ) : (
             <button
@@ -169,9 +216,9 @@ function ProductCard({
                 inWishlist ? 'btn-wishlisted' : 'btn-outline-primary'
               }`}
               onClick={handleWishlistClick}
-              disabled={saving}
+              disabled={savingWishlist}
             >
-              {saving ? (
+              {savingWishlist ? (
                 '⏳ Saving...'
               ) : inWishlist ? (
                 '♥ Added to Wishlist'

@@ -331,6 +331,173 @@ async function runTests() {
     const toggleRemoveData = await toggleRemove.json();
     assert(toggleRemoveData.saved === false, "Bonus: Wishlist toggle removes product (saved: false)");
 
+    // --------------------------------------------------
+    // LAB 05 VERIFICATION: SHOPPING CART TESTS
+    // --------------------------------------------------
+    console.log("\n--- LAB 05: SHOPPING CART TESTS ---");
+
+    // Test 1: Add new item to cart -> quantity = 1
+    const addCartRes1 = await fetch(`${BASE_URL}/cart/${createdProductId}`, {
+      method: "POST",
+      headers: { Cookie: cookieHeader1 },
+    });
+    const addCartData1 = await addCartRes1.json();
+    assert(addCartRes1.status === 200, "Cart Test 1: POST /cart/:productId returns 200");
+    assert(addCartData1.success === true, "Cart Test 1: Add to cart success is true");
+    const item1 = addCartData1.cart.find((i) => (i.product?._id || i.product) === createdProductId);
+    assert(item1 && item1.quantity === 1, "Cart Test 1: Initial item quantity is 1");
+
+    // Test 2: Add same item again -> quantity increments to 2 without duplicate row
+    const addCartRes2 = await fetch(`${BASE_URL}/cart/${createdProductId}`, {
+      method: "POST",
+      headers: { Cookie: cookieHeader1 },
+    });
+    const addCartData2 = await addCartRes2.json();
+    assert(addCartRes2.status === 200, "Cart Test 2: Adding same product returns 200");
+    const itemsMatching = addCartData2.cart.filter(
+      (i) => (i.product?._id || i.product) === createdProductId
+    );
+    assert(itemsMatching.length === 1, "Cart Test 2: Duplicate cart rows are prevented");
+    assert(itemsMatching[0].quantity === 2, "Cart Test 2: Quantity incremented to 2");
+
+    // Test 3: GET /cart -> populated Product information + quantity
+    const getCartRes = await fetch(`${BASE_URL}/cart`, {
+      headers: { Cookie: cookieHeader1 },
+    });
+    const getCartData = await getCartRes.json();
+    assert(getCartRes.status === 200, "Cart Test 3: GET /cart returns 200");
+    assert(Array.isArray(getCartData.cart), "Cart Test 3: Returns cart array");
+    const populatedItem = getCartData.cart.find(
+      (i) => i.product?._id === createdProductId
+    );
+    assert(Boolean(populatedItem?.product?.name), "Cart Test 3: Product name is populated");
+    assert(typeof populatedItem?.product?.price === "number", "Cart Test 3: Product price is populated");
+    assert(typeof populatedItem?.product?.stock === "number", "Cart Test 3: Product stock is populated");
+    assert(populatedItem?.quantity === 2, "Cart Test 3: Retains current quantity of 2");
+
+    // Test 4: Update quantity -> PATCH /cart/:productId
+    const updateQtyRes = await fetch(`${BASE_URL}/cart/${createdProductId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieHeader1,
+      },
+      body: JSON.stringify({ quantity: 3 }),
+    });
+    const updateQtyData = await updateQtyRes.json();
+    assert(updateQtyRes.status === 200, "Cart Test 4: PATCH /cart/:productId returns 200");
+    const updatedItem = updateQtyData.cart.find(
+      (i) => (i.product?._id || i.product) === createdProductId
+    );
+    assert(updatedItem?.quantity === 3, "Cart Test 4: Quantity successfully updated to 3");
+
+    // Test 5: Exceed stock validation -> 400 Bad Request
+    const exceedStockRes = await fetch(`${BASE_URL}/cart/${createdProductId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieHeader1,
+      },
+      body: JSON.stringify({ quantity: 99999 }),
+    });
+    assert(exceedStockRes.status === 400, "Cart Test 5: Exceeding stock returns 400 Bad Request");
+
+    // Test 6: Quantity < 1 validation -> 400 Bad Request
+    const minQtyRes = await fetch(`${BASE_URL}/cart/${createdProductId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieHeader1,
+      },
+      body: JSON.stringify({ quantity: 0 }),
+    });
+    assert(minQtyRes.status === 400, "Cart Test 6: Quantity < 1 returns 400 Bad Request");
+
+    // Test 7: Update product not in cart -> 404
+    const notInCartRes = await fetch(`${BASE_URL}/cart/${bookProductId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieHeader1,
+      },
+      body: JSON.stringify({ quantity: 2 }),
+    });
+    assert(notInCartRes.status === 404, "Cart Test 7: Updating product not in cart returns 404");
+
+    // Test 8: Remove item -> DELETE /cart/:productId
+    const removeCartRes = await fetch(`${BASE_URL}/cart/${createdProductId}`, {
+      method: "DELETE",
+      headers: { Cookie: cookieHeader1 },
+    });
+    const removeCartData = await removeCartRes.json();
+    assert(removeCartRes.status === 200, "Cart Test 8: DELETE /cart/:productId returns 200");
+    assert(
+      !removeCartData.cart.some((i) => (i.product?._id || i.product) === createdProductId),
+      "Cart Test 8: Item removed from returned cart"
+    );
+
+    // Test 9: Remove item not in cart -> 404
+    const removeAgainRes = await fetch(`${BASE_URL}/cart/${createdProductId}`, {
+      method: "DELETE",
+      headers: { Cookie: cookieHeader1 },
+    });
+    assert(removeAgainRes.status === 404, "Cart Test 9: Removing item not in cart returns 404");
+
+    // Test 10: Invalid Product ID -> 400 Bad Request
+    const invalidCartIdRes = await fetch(`${BASE_URL}/cart/invalid-objectid`, {
+      method: "POST",
+      headers: { Cookie: cookieHeader1 },
+    });
+    assert(invalidCartIdRes.status === 400, "Cart Test 10: Invalid product ID returns 400");
+
+    // Test 11: Nonexistent Product -> 404 Not Found
+    const nonExCartRes = await fetch(`${BASE_URL}/cart/66d000000000000000000000`, {
+      method: "POST",
+      headers: { Cookie: cookieHeader1 },
+    });
+    assert(nonExCartRes.status === 404, "Cart Test 11: Nonexistent product returns 404");
+
+    // Test 12: Unauthenticated request -> 401 Unauthorized
+    const unauthCartRes = await fetch(`${BASE_URL}/cart`);
+    assert(unauthCartRes.status === 401, "Cart Test 12: Unauthenticated request returns 401");
+
+    // Test 13: Multi-user cart isolation
+    await fetch(`${BASE_URL}/cart/${bookProductId}`, {
+      method: "POST",
+      headers: { Cookie: cookieHeader2 },
+    });
+    await fetch(`${BASE_URL}/cart/${bookProductId}`, {
+      method: "POST",
+      headers: { Cookie: cookieHeader2 },
+    });
+
+    const user1CartRes = await fetch(`${BASE_URL}/cart`, {
+      headers: { Cookie: cookieHeader1 },
+    });
+    const user1CartData = await user1CartRes.json();
+
+    const user2CartRes = await fetch(`${BASE_URL}/cart`, {
+      headers: { Cookie: cookieHeader2 },
+    });
+    const user2CartData = await user2CartRes.json();
+
+    assert(user1CartData.cart.length === 0, "Cart Test 13: User 1 cart remains empty");
+    assert(
+      user2CartData.cart.length === 1 && user2CartData.cart[0].quantity === 2,
+      "Cart Test 13: User 2 cart has their own items and is isolated"
+    );
+
+    // Test 14: Direct MongoDB persistence verification
+    const CustomerModel = require("./models/customer.model");
+    const persistedUser2 = await CustomerModel.findOne({ email: user2Email });
+    assert(
+      persistedUser2 &&
+        persistedUser2.cart.length === 1 &&
+        persistedUser2.cart[0].product.toString() === bookProductId.toString() &&
+        persistedUser2.cart[0].quantity === 2,
+      "Cart Test 14: Cart is physically persisted in MongoDB"
+    );
+
     console.log("\n==================================================");
     console.log(`ALL ${passedTests}/${totalTests} TESTS PASSED SUCCESSFULLY!`);
     console.log("==================================================");

@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "test": "node test_suite.js",
+    "test": "node test_suite.js && node test_lab06.js",
+    "test:labs1-5": "node test_suite.js",
+    "test:lab06": "node test_lab06.js",
     "seed": "node seed.js"
   },
   "keywords": [
@@ -24,6 +26,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.10.1"
+    "mongoose": "^9.10.1",
+    "razorpay": "^2.9.8"
   }
 }

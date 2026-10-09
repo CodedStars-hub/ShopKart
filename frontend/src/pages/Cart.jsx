@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useCart } from '../context/useCart';
 
@@ -25,7 +25,6 @@ function Cart() {
   } = useCart();
 
   const [feedbackMessage, setFeedbackMessage] = useState('');
-  const [checkoutNotice, setCheckoutNotice] = useState('');
 
   const handleQuantityDecrease = async (productId, currentQty) => {
     if (currentQty <= 1) return;
@@ -57,9 +56,10 @@ function Cart() {
     }
   };
 
+  const navigate = useNavigate();
+
   const handleCheckoutClick = () => {
-    setCheckoutNotice('Checkout and payment processing will be available in Lab 06!');
-    setTimeout(() => setCheckoutNotice(''), 3500);
+    navigate('/checkout');
   };
 
   return (
@@ -84,12 +84,6 @@ function Cart() {
             </div>
           )}
 
-          {checkoutNotice && (
-            <div className="alert alert-info cart-alert">
-              <span>ℹ️</span>
-              <span>{checkoutNotice}</span>
-            </div>
-          )}
 
           {/* Loading State */}
           {cartLoading ? (

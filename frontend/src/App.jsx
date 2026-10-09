@@ -7,9 +7,12 @@ import Products from './pages/Products';
 import ProductDetails from './pages/ProductDetails';
 import Wishlist from './pages/Wishlist';
 import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import OrderSuccess from './pages/OrderSuccess';
+import Orders from './pages/Orders';
 
 /**
- * Main Application Component for ShopKart (Labs 01 - 05).
+ * Main Application Component for ShopKart (Labs 01 - 06).
  * Configures client-side routing with React Router & CartProvider:
  * - /register: Customer registration form
  * - /login: Customer login form
@@ -18,6 +21,9 @@ import Cart from './pages/Cart';
  * - /products/:id: Product details view (Lab 03)
  * - /wishlist: Protected customer wishlist (Lab 04)
  * - /cart: Persistent shopping cart with global state (Lab 05)
+ * - /checkout: Validated shipping & Razorpay checkout (Lab 06)
+ * - /order-success/:id: Order confirmation & receipt (Lab 06)
+ * - /orders: My Orders purchase history (Lab 06)
  * - / and *: Redirects to /products
  */
 function App() {
@@ -44,6 +50,11 @@ function App() {
 
           {/* Lab 05: Persistent Shopping Cart */}
           <Route path="/cart" element={<Cart />} />
+
+          {/* Lab 06: Checkout, Payment Verification & Orders */}
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-success/:id" element={<OrderSuccess />} />
+          <Route path="/orders" element={<Orders />} />
 
           {/* Fallback for unmatched routes */}
           <Route path="*" element={<Navigate to="/products" replace />} />

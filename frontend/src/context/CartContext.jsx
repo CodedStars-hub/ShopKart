@@ -138,6 +138,12 @@ export function CartProvider({ children }) {
     }
   }, []);
 
+  // Immediately reset in-memory cart state after verified checkout
+  const clearCart = useCallback(() => {
+    setCartItems([]);
+    setCartError(null);
+  }, []);
+
   // Calculate derived values directly from cartItems
   const subtotal = useMemo(() => {
     return cartItems.reduce((acc, item) => {
@@ -165,6 +171,7 @@ export function CartProvider({ children }) {
       updateQuantity,
       removeFromCart,
       refreshCart,
+      clearCart,
     }),
     [
       cartItems,
@@ -177,6 +184,7 @@ export function CartProvider({ children }) {
       updateQuantity,
       removeFromCart,
       refreshCart,
+      clearCart,
     ]
   );
 

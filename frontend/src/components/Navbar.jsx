@@ -91,6 +91,12 @@ function Navbar({ wishlistCount }) {
               <span className="cart-badge">{cartCount}</span>
             )}
           </NavLink>
+          <NavLink
+            to="/orders"
+            className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}
+          >
+            My Orders
+          </NavLink>
           <button
             type="button"
             onClick={handleLogout}

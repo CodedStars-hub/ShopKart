@@ -209,41 +209,40 @@ The diagram below details the interaction between the customer browser, the Reac
 sequenceDiagram
     autonumber
     actor Customer as Customer (Browser)
-    participant React as React Client (CartContext)
-    participant Express as Express REST API
-    participant DB as MongoDB Database
-    participant RZP as Razorpay Gateway
+    participant React as React Client
+    participant API as Express API
+    participant DB as MongoDB
+    participant Razorpay as Razorpay Gateway
 
-    Customer->>React: Submit Shipping Address & Click Pay
-    React->>Express: POST /orders/create-payment-order { shippingAddress }
-    Note over Express: authMiddleware validates JWT cookie
-    Express->>DB: Fetch Customer Cart & Live Product Records
-    Note over Express: Verify stock levels & calculate server-authoritative totalAmount
-    Express->>DB: Create Order (status: PENDING_PAYMENT, paymentStatus: PENDING)
-    Express->>RZP: razorpay.orders.create({ amount: totalInPaise, currency: "INR" })
-    RZP-->>Express: Returns { id: razorpay_order_id }
-    Express->>DB: Save razorpayOrderId to Order document
-    Express-->>React: Return { shopKartOrderId, razorpayOrderId, amount, razorpayKeyId }
-    
-    React->>RZP: window.Razorpay(options).open()
-    Customer->>RZP: Select Test Payment Method & Authorize
-    RZP-->>React: Callback returns { razorpay_payment_id, razorpay_signature }
-    
-    React->>Express: POST /orders/verify-payment { shopKartOrderId, razorpay_order_id, razorpay_payment_id, razorpay_signature }
-    Note over Express: Compute HMAC SHA-256(order_id + "|" + payment_id, RAZORPAY_KEY_SECRET)
-    Note over Express: Verify signature via crypto.timingSafeEqual()
-    
+    Customer->>React: Submit shipping address and click Pay
+    React->>API: POST /orders/create-payment-order
+    Note over API: authMiddleware validates JWT session cookie
+    API->>DB: Fetch customer cart and live product inventory
+    Note over API: Verify stock and calculate trusted total amount
+    API->>DB: Create order with PENDING_PAYMENT status
+    API->>Razorpay: Create order with amount in paise
+    Razorpay-->>API: Return razorpay_order_id
+    API->>DB: Link razorpay_order_id to order document
+    API-->>React: Return order details and razorpayKeyId
+
+    React->>Razorpay: Open standard checkout modal
+    Customer->>Razorpay: Authorize test payment
+    Razorpay-->>React: Return payment credentials and signature
+
+    React->>API: POST /orders/verify-payment
+    Note over API: Verify HMAC SHA-256 signature via timingSafeEqual
+
     alt Signature Valid
-        Express->>DB: Update Order (status: PLACED, paymentStatus: PAID, paymentId)
-        Express->>DB: Atomically decrement product stock ($inc: -quantity)
-        Express->>DB: Clear customer cart in MongoDB (cart: [])
-        Express-->>React: Return 200 OK { success: true, order }
-        React->>React: clearCart() in CartContext
-        React->>Customer: Redirect to /order-success/:id
+        API->>DB: Update order to PLACED and PAID
+        API->>DB: Atomically decrement product stock
+        API->>DB: Clear customer cart in MongoDB
+        API-->>React: Return 200 OK with confirmed order
+        React->>React: Clear local cart in CartContext
+        React->>Customer: Redirect to order confirmation page
     else Signature Invalid
-        Express->>DB: Update Order (paymentStatus: FAILED)
-        Express-->>React: Return 400 Bad Request { success: false, message: "Invalid payment signature" }
-        Note over React: Cart is preserved; display alert to customer
+        API->>DB: Update order paymentStatus to FAILED
+        API-->>React: Return 400 Bad Request with error message
+        Note over React: Cart remains preserved and alert is displayed
     end
 ```
 

@@ -1,332 +1,378 @@
-# ShopKart — Full-Stack MERN E-Commerce Platform
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="frontend/public/logo-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="frontend/public/logo.png">
+    <img alt="ShopKart Logo" src="frontend/public/logo.png" width="380">
+  </picture>
+</p>
 
-> **A secure, production-grade MERN e-commerce application featuring HttpOnly JWT authentication, dynamic catalog discovery, persistent user carts, Razorpay Test Mode checkout, and HMAC SHA-256 payment verification.**
+<p align="center">
+  <strong>Your next favourite, just a click away.</strong>
+</p>
 
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Express.js](https://img.shields.io/badge/Express-5.2.1-000000?style=flat-square&logo=express&logoColor=white)](https://expressjs.com/)
-[![React](https://img.shields.io/badge/React-19.2.8-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas%20%2F%20Mongoose%209.10-47A248?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-[![Vite](https://img.shields.io/badge/Vite-8.3.0-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Razorpay](https://img.shields.io/badge/Razorpay-Test%20Mode%20SDK-02042B?style=flat-square&logo=razorpay&logoColor=blue)](https://razorpay.com/)
-[![License](https://img.shields.io/badge/License-Academic%20Lab-blue?style=flat-square)](#license-and-attribution)
+<p align="center">
+  A full-stack MERN e-commerce application engineered with HttpOnly JWT authentication, dynamic product catalog discovery, persistent user carts, Razorpay Test Mode checkout, and HMAC SHA-256 payment verification.
+</p>
+
+<p align="center">
+  <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19.2-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js"></a>
+  <a href="https://expressjs.com/"><img src="https://img.shields.io/badge/Express-5.2-000000?style=flat-square&logo=express&logoColor=white" alt="Express"></a>
+  <a href="https://www.mongodb.com/"><img src="https://img.shields.io/badge/MongoDB-Atlas%20%2F%20Mongoose%209.10-47A248?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB"></a>
+  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-8.3-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite"></a>
+  <a href="https://razorpay.com/"><img src="https://img.shields.io/badge/Razorpay-Test%20Mode-02042B?style=flat-square&logo=razorpay&logoColor=blue" alt="Razorpay"></a>
+  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"><img src="https://img.shields.io/badge/JavaScript-ES2023-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript"></a>
+</p>
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 
 - [About ShopKart](#about-shopkart)
 - [Core Features](#core-features)
-- [Technology Stack](#technology-stack)
+  - [Authentication & Account Security](#1-authentication--account-security)
+  - [Product Discovery & Catalog](#2-product-discovery--catalog)
+  - [Customer Wishlist](#3-customer-wishlist)
+  - [Persistent Shopping Cart](#4-persistent-shopping-cart)
+  - [Checkout, Payments & Order Management](#5-checkout-payments--order-management)
 - [Application Screenshots](#application-screenshots)
-- [Architecture & System Design](#architecture--system-design)
-  - [High-Level Flow Diagram](#high-level-flow-diagram)
-  - [Repository Structure](#repository-structure)
-- [Core User Workflows](#core-user-workflows)
+- [Technology Stack](#technology-stack)
+- [Architecture & Technical Design](#architecture--technical-design)
+  - [System Overview](#system-overview)
+  - [Checkout & Payment Verification Sequence](#checkout--payment-verification-sequence)
+  - [Client-Server Communication & Data Flows](#client-server-communication--data-flows)
+- [Repository Structure](#repository-structure)
 - [Prerequisites](#prerequisites)
 - [Local Installation & Setup](#local-installation--setup)
 - [Environment Variables](#environment-variables)
 - [REST API Reference](#rest-api-reference)
-  - [Authentication Endpoints (`/customers`)](#authentication-endpoints-customers)
+  - [Customer Endpoints (`/customers`)](#customer-endpoints-customers)
   - [Product Endpoints (`/products`)](#product-endpoints-products)
   - [Wishlist Endpoints (`/wishlist`)](#wishlist-endpoints-wishlist)
   - [Cart Endpoints (`/cart`)](#cart-endpoints-cart)
   - [Order & Payment Endpoints (`/orders`)](#order--payment-endpoints-orders)
-- [Database Schema & Data Modeling](#database-schema--data-modeling)
+- [Database Models & Relationships](#database-models--relationships)
   - [Entity Relationship Diagram](#entity-relationship-diagram)
-  - [Design Rationale](#design-rationale)
+  - [Data Design Rationale](#data-design-rationale)
 - [Security & Validation Architecture](#security--validation-architecture)
-- [Available Scripts & Automated Testing](#available-scripts--automated-testing)
-- [Troubleshooting Guide](#troubleshooting-guide)
+- [Testing & Quality Checks](#testing--quality-checks)
+  - [Automated Test Suite Summary](#automated-test-suite-summary)
+  - [Code Quality & Build Verification](#code-quality--build-verification)
+- [Troubleshooting](#troubleshooting)
 - [Project Status & Roadmap](#project-status--roadmap)
-- [License and Attribution](#license-and-attribution)
+- [License & Attribution](#license--attribution)
 
 ---
 
 ## About ShopKart
 
-**ShopKart** is a full-stack e-commerce web application developed systematically across six engineering laboratory modules (Labs 01 through 06). Designed with security, data integrity, and user experience at the forefront, the application bridges client-side React interactions with an authoritative server-side Node.js/Express architecture backed by MongoDB.
+**ShopKart** is a full-stack e-commerce web platform developed across six progressive engineering laboratory stages. Designed with security, data integrity, and a responsive shopping experience at its core, the application couples a modular React 19 single-page client with an authoritative Express 5 REST API backed by MongoDB.
 
-With ShopKart, customers can:
-1. **Register and authenticate** securely using salted bcrypt password hashing and session management through `HttpOnly` JWT cookies.
-2. **Discover products** through a responsive catalog supporting debounce-assisted search, category filters, and sorting.
-3. **Curate a personalized wishlist** stored directly in MongoDB.
-4. **Manage a persistent shopping cart** with client-side optimistic synchronization via React Context and server-side real-time inventory validation.
-5. **Checkout safely** through Razorpay Standard Checkout (Test Mode), where order amounts are verified on the server, payments are cryptographically authenticated using HMAC SHA-256 signatures, and stock is decremented in MongoDB upon payment confirmation.
-6. **Review purchase history** with historical price snapshots and order status tracking.
+### Target Users & Use Cases
+- **Shoppers:** Browse a curated catalog across Electronics, Fashion, Books, and Home categories; execute real-time debounced searches; save items to personal wishlists; manage cart quantities with inventory-guarded stepper controls; and complete end-to-end checkout using Razorpay Test Mode.
+- **Account Owners:** Maintain authenticated sessions secured with HttpOnly cookies, review previous orders with historical price snapshots, and update account credentials securely.
+
+### Engineering Problems Addressed
+1. **Session Hijacking & XSS Defense:** Authentication tokens are stored strictly in `HttpOnly`, `SameSite` browser cookies rather than browser `localStorage` or `sessionStorage`, making tokens inaccessible to malicious client-side scripts.
+2. **Server-Authoritative Pricing:** Client-submitted prices and totals are completely ignored during checkout. Line item costs and grand totals are computed server-side directly from authoritative MongoDB records to prevent price-tampering attacks.
+3. **Inventory Race Conditions:** Inventory levels are verified when adding items to cart, re-validated at the moment of payment order creation, and atomically decremented in MongoDB upon cryptographic signature verification.
+4. **Cryptographic Payment Integrity:** Payment signatures are verified using server-side HMAC SHA-256 computation and constant-time buffer comparison (`crypto.timingSafeEqual`), preventing signature spoofing and timing attacks.
+5. **Historical Snapshot Integrity:** Order records embed immutable snapshots of item names, prices, and quantities at the time of purchase. Future changes to catalog pricing do not corrupt past invoices or accounting records.
+6. **Graceful Payment Failure Handling:** Customer carts remain preserved in the database until payment signature verification succeeds. Payment cancellations or modal dismissals never result in lost carts.
 
 ---
 
 ## Core Features
 
-### 1. Customer Authentication (Lab 01)
-- **Email & Password Registration:** Validates customer name, phone number, unique email, and password complexity.
-- **Bcrypt Password Security:** Passwords hashed with 10 salt rounds prior to persistence; credentials never stored in plaintext.
-- **HttpOnly JWT Session Cookies:** Tokens issued upon login with a 1-day expiration and stored in `HttpOnly`, `SameSite` browser cookies to mitigate Cross-Site Scripting (XSS) and token extraction vulnerabilities.
-- **Protected Profile:** Backend `authMiddleware` decodes token cookies, validates database existence, and attaches the customer document to `req.user`.
-- **Session Termination:** Dedicated logout endpoint explicitly expires the authentication cookie.
+### 1. Authentication & Account Security
+- **Input Validation:** Enforces non-empty full name, normalized unique email address, password complexity, and 10-digit Indian phone numbers (`^[6-9]\d{9}$`).
+- **One-Way Password Hashing:** User passwords are encrypted with bcrypt using 10 salt rounds before persistence; plaintext credentials are never logged or stored.
+- **HttpOnly JWT Sessions:** JSON Web Tokens signed with `JWT_SECRET` (1-day expiration) are issued inside an `HttpOnly`, `SameSite` cookie (`token`), mitigating XSS token extraction.
+- **Protected Routing:** Backend `authMiddleware` validates JWT cookies, confirms customer existence in MongoDB, and attaches the customer document to `req.user`.
+- **Credential Management:** Dedicated endpoints for profile retrieval (`GET /customers/me`), password changes with previous-password verification (`PATCH /customers/change-password`), and session termination (`POST /customers/logout`).
 
-### 2. Product Catalog & Discovery (Lab 03)
-- **Catalog Browsing:** Responsive product grid displaying titles, categories, pricing, stock levels, and product images.
-- **Real-Time Search:** Search bar querying product names and descriptions with regex sanitization to prevent ReDoS attacks.
-- **Category Filtering:** Filter products dynamically by categories (`Electronics`, `Fashion`, `Books`, `Home`).
-- **Sorting Options:** Sort products by price ascending (`price_asc`) or price descending (`price_desc`).
-- **Product Details View (`/products/:id`):** Dedicated page showing high-resolution product imagery, full descriptions, stock availability tags, and direct cart/wishlist actions.
+### 2. Product Discovery & Catalog
+- **Storefront Landing Page (`/home`):** Curated customer portal featuring a hero banner, category cards with direct catalog filtering, live featured items with working cart/wishlist triggers, platform shopping benefits, and a collapsible customer profile drawer.
+- **Dynamic Catalog Grid (`/products`):** Responsive grid displaying product photography, titles, categories, pricing, stock levels, and quick-action triggers.
+- **Debounced Search:** Live search queries matching product names and descriptions with special-character escaping to prevent Regular Expression Denial of Service (ReDoS).
+- **Multi-Category Filtering:** Filter products by `Electronics`, `Fashion`, `Books`, and `Home` with synchronized URL search parameters (`?category=...`).
+- **Price Sorting:** Sort catalog results dynamically by price ascending (`price_asc`) and descending (`price_desc`).
+- **Product Details View (`/products/:id`):** Dedicated view with high-resolution imagery, full product descriptions, live stock status badges, and interactive cart/wishlist controls.
 
-### 3. Customer Wishlist (Lab 04)
-- **User-Specific Wishlists:** Wishlists stored per customer in MongoDB using ObjectId references.
-- **One-Click Toggling:** Quick toggle directly from product cards or product details.
-- **Dynamic Header Badge:** Real-time wishlist item counter in the navigation bar.
-- **Duplicate Prevention:** Strict server-side prevention of duplicate entries returning HTTP 409 Conflict.
+### 3. Customer Wishlist
+- **Customer Data Isolation:** Wishlist items are stored per-user inside the `Customer` document using MongoDB ObjectId references.
+- **One-Click Toggling:** Quick-toggle capability (`PATCH /wishlist/:productId/toggle`) alongside explicit add (`POST`) and remove (`DELETE`) routes.
+- **Dynamic Navigation Badge:** Real-time wishlist item counter displayed in the navigation bar.
+- **Duplicate Prevention:** Server-side validation rejects duplicate wishlist additions with HTTP 409 Conflict.
 
-### 4. Persistent Shopping Cart (Lab 05)
-- **Database Persistence:** Carts saved in the authenticated customer document, enabling cross-device and multi-session cart retention.
-- **Global React Cart Context:** Centralized in-memory cart state consumed across the application without external state management dependencies.
-- **Live Inventory Guard:** Stepper controls prevent customers from selecting quantities exceeding available stock.
-- **Live Navigation Counter:** Cart unit badge updates dynamically across all routes.
-- **Automatic Orphan Pruning:** Automatically cleans up cart references if an underlying product document is removed from the catalog.
+### 4. Persistent Shopping Cart
+- **Database Persistence:** Carts are embedded directly within the customer's database record, persisting items across different browsers, tabs, and login sessions.
+- **Global React Cart Context:** Centralized state provider (`CartContext`) providing synchronized cart item counts, line updates, and total calculations across all routes.
+- **Live Inventory Steppers:** Client and server bounds enforce quantities between 1 and the maximum available inventory (`product.stock`).
+- **Automatic Orphan Pruning:** Automatically detects and purges cart references if an underlying product is removed from the catalog.
 
-### 5. Checkout & Razorpay Test Payments (Lab 06)
-- **Validated Shipping Address:** Client and server-side validation enforcing non-empty fields, Indian mobile numbers (`^[6-9]\d{9}$`), and 6-digit Indian postal pincodes (`^\d{6}$`).
-- **Server-Authoritative Pricing:** Client-submitted prices and totals are completely ignored; the backend recalculates line totals and orders from live database records.
-- **Stock Re-Verification:** Real-time inventory verified at the millisecond of order generation to prevent overselling.
-- **Paise Conversion:** Strict integer conversion (`Math.round(totalAmount * 100)`) preventing floating-point currency drift.
-- **Razorpay Standard Checkout:** Official modal integration via `https://checkout.razorpay.com/v1/checkout.js`.
-- **HMAC SHA-256 Verification:** Signatures cryptographically verified using Node's `crypto.timingSafeEqual` and `RAZORPAY_KEY_SECRET`.
-- **Purchase-Time Snapshots:** Orders capture historical price and product name snapshots at the time of purchase, preserving accounting records against future product catalog edits.
-- **Deferred Cart Clearing:** Database and React carts are cleared **only after** signature verification succeeds.
-
----
-
-## Technology Stack
-
-| Layer | Technology | Version | Purpose |
-|---|---|---|---|
-| **Frontend Framework** | React | `^19.2.8` | Component-based user interface and state management |
-| **Client Routing** | React Router DOM | `^7.18.4` | Declarative client-side routing and browser navigation |
-| **HTTP Client** | Axios | `^1.20.0` | Promise-based HTTP client configured with `withCredentials: true` |
-| **Build & Tooling** | Vite | `^8.3.0` | Frontend dev server, HMR, and production bundler |
-| **Frontend Linter** | Oxlint | `^1.81.0` | Fast static analysis and code linting |
-| **Styling** | Vanilla CSS | CSS3 | Custom design system with tokens, variables, and responsive grids |
-| **Backend Runtime** | Node.js | `>= 18.0.0` | JavaScript server runtime environment |
-| **Web Framework** | Express | `^5.2.1` | RESTful API server routing and middleware pipeline |
-| **Database & ODM** | MongoDB / Mongoose | `^9.10.1` | NoSQL document database and schema modeling |
-| **Password Hashing** | bcrypt | `^6.0.0` | One-way cryptographic password hashing (10 salt rounds) |
-| **Token Authentication**| jsonwebtoken (JWT) | `^9.0.3` | Cryptographic session tokens encoded with customer ID |
-| **Cookie Parsing** | cookie-parser | `^1.4.7` | Middleware for reading and signing HTTP cookies |
-| **Payment Gateway** | Razorpay Node SDK | `^2.9.8` | Order creation and payment gateway communication (Test Mode) |
-| **Cryptography** | Node.js `crypto` | Built-in | HMAC SHA-256 payment signature hashing & `timingSafeEqual` |
-| **Config Management** | dotenv | `^17.4.2` | Environment variable management |
+### 5. Checkout, Payments & Order Management
+- **Validated Shipping Address:** Strict client and server validation enforcing recipient name, address lines, city, state, 10-digit Indian mobile number, and 6-digit Indian postal pincode (`^\d{6}$`).
+- **Server Total Recalculation:** The backend computes grand totals directly from verified database prices and converts amounts to paise (`Math.round(totalAmount * 100)`) to eliminate floating-point arithmetic errors.
+- **Razorpay Standard Checkout:** Official Razorpay JavaScript modal (`checkout.js`) integration handling test card, UPI, and netbanking flows.
+- **Cryptographic Payment Verification:** Computes HMAC SHA-256 over `order.razorpayOrderId + "|" + razorpay_payment_id` using `RAZORPAY_KEY_SECRET` and verifies signatures with `crypto.timingSafeEqual`.
+- **Atomic Stock Decrement:** Stock counts are decremented atomically (`$inc: { stock: -quantity }`) in MongoDB only after signature verification passes.
+- **Deferred Cart Clearing:** The user's cart is emptied in both MongoDB and React Context only upon verified payment.
+- **Order Confirmation & History:** Post-payment receipt (`/order-success/:id`) and full order history (`/orders`) displaying purchase-time item snapshots, shipping addresses, payment references, and current fulfillment status.
 
 ---
 
 ## Application Screenshots
 
-> *Screenshots can be placed in `docs/screenshots/` and linked below.*
+> **Note on Visual Assets:** To keep the repository lightweight and free of transient binary artifacts, screenshot files are not pre-committed to Git. The table below specifies the verified application views and their recommended capture locations for project submissions.
 
-| View | Description | Suggested Screenshot Asset |
-|---|---|---|
-| **Product Catalog** | Product discovery with search and category filters | `docs/screenshots/01_catalog.png` |
-| **Product Details** | High-resolution image, stock status, and add-to-cart controls | `docs/screenshots/02_product_details.png` |
-| **Shopping Cart** | Persistent cart, item steppers, and order summary | `docs/screenshots/03_cart.png` |
-| **Checkout & Address** | Shipping validation and order summary preview | `docs/screenshots/04_checkout.png` |
-| **Razorpay Test Modal** | Official Razorpay Test Mode checkout popup | `docs/screenshots/05_razorpay_modal.png` |
-| **Order Receipt** | Confirmed order status, payment reference, and item snapshots | `docs/screenshots/06_order_success.png` |
-| **Order History** | List of past customer orders with expandable details | `docs/screenshots/07_my_orders.png` |
+| View | Route | Key Verification Elements | Suggested Target Path |
+|---|---|---|---|
+| **Storefront Home** | `/home` | Hero banner, category cards, featured items, benefits ribbon, profile drawer | `docs/screenshots/01_storefront_home.png` |
+| **Product Catalog** | `/products` | Category filters, search input, price sorting, distinct product cards | `docs/screenshots/02_catalog.png` |
+| **Product Details** | `/products/:id` | High-res image, category badge, price, stock counter, Add to Cart action | `docs/screenshots/03_product_details.png` |
+| **Customer Wishlist**| `/wishlist` | Populated wishlist items, remove triggers, direct Move to Cart action | `docs/screenshots/04_wishlist.png` |
+| **Shopping Cart** | `/cart` | Line items, inventory stepper controls, order summary card, checkout button | `docs/screenshots/05_cart.png` |
+| **Checkout & Shipping**| `/checkout` | Shipping address fields, 6-digit pincode validation, Pay with Razorpay CTA | `docs/screenshots/06_checkout.png` |
+| **Razorpay Test Modal**| `/checkout` | Official Razorpay modal popup with Test Mode badge and payment options | `docs/screenshots/07_razorpay_modal.png` |
+| **Order Confirmation** | `/order-success/:id` | Order ID, Razorpay payment reference, item snapshots, shipping address | `docs/screenshots/08_order_success.png` |
+| **Order History** | `/orders` | Order chronology, status badges (`PLACED`, `PAID`), historical price snapshots | `docs/screenshots/09_my_orders.png` |
 
 ---
 
-## Architecture & System Design
+## Technology Stack
 
-ShopKart follows a multi-tier client-server architecture with strict separation of concerns:
+| Layer / Role | Technology | Version | Purpose in Application |
+|---|---|---|---|
+| **Frontend Framework** | React | `^19.2.8` | Component hierarchy, state management, and declarative UI rendering |
+| **Client Routing** | React Router DOM | `^7.18.4` | Declarative client-side routing, protected routes, and URL query param sync |
+| **HTTP Client** | Axios | `^1.20.0` | Promise-based HTTP client configured with `withCredentials: true` for cookie transport |
+| **Build Tool & Bundler**| Vite | `^8.3.0` | Frontend dev server, Hot Module Replacement (HMR), and production build bundler |
+| **Frontend Linter** | Oxlint | `^1.81.0` | High-performance Rust-based linter enforcing clean React patterns and JSX hygiene |
+| **Styling Architecture**| Vanilla CSS | CSS3 | Custom design system using design tokens, CSS variables, and responsive flex/grid layouts |
+| **Backend Runtime** | Node.js | `>= 18.0.0` | Cross-platform asynchronous JavaScript server runtime |
+| **Web Framework** | Express | `^5.2.1` | RESTful API server routing, middleware pipeline, and JSON request parsing |
+| **Database & ODM** | MongoDB / Mongoose | `^9.10.1` | Document database and object data modeling with strict validation and schemas |
+| **Password Hashing** | bcrypt | `^6.0.0` | One-way cryptographic password hashing using 10 salt rounds |
+| **Session Authentication**| jsonwebtoken (JWT) | `^9.0.3` | Cryptographic session tokens encoded with customer ID and expiration |
+| **Cookie Parsing** | cookie-parser | `^1.4.7` | Middleware for reading and signing HTTP cookies from incoming request headers |
+| **Payment Gateway** | Razorpay Node SDK | `^2.9.8` | Server-side Razorpay order generation and API communication |
+| **Cryptographic Utilities**| Node.js `crypto` | Built-in | HMAC SHA-256 signature hashing and constant-time `timingSafeEqual` comparison |
+| **Configuration** | dotenv | `^17.4.2` | Loading environment variables from `.env` files |
+
+---
+
+## Architecture & Technical Design
+
+### System Overview
+
+ShopKart follows a decoupled client-server architecture with clear tier boundaries:
 
 ```
-[ Client Browser ]
-        │
-        ▼ (HTTPS / HTTP)
-[ Vite Dev Reverse Proxy / Production Host ]
-        │
-        ▼ (Proxy: /customers, /products, /wishlist, /cart, /orders)
-[ Express 5 REST API Server ]
-        │
-        ├── [ Middlewares: cookieParser, express.json, authMiddleware ]
-        │
-        ├── [ Controllers: customer, product, wishlist, cart, order ]
-        │
-        ├── [ Razorpay SDK / Node.js Crypto ] ────► [ Razorpay Payment Gateway ]
-        │
-        └── [ Mongoose ODM (Data Access Layer) ]
-                    │
-                    ▼
-          [ MongoDB Database ]
+┌─────────────────────────────────────────────────────────────┐
+│                       Client Browser                        │
+│   React 19 SPA (Vite) + Context API + React Router DOM v7   │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               │ HTTPS / HTTP (withCredentials: true)
+                               │ Vite Dev Reverse Proxy (:5173 -> :5001)
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Express 5 REST API                       │
+│                                                             │
+│   Middlewares: cookieParser, express.json, authMiddleware   │
+│                                                             │
+│   Controllers:                                              │
+│   ├── customer.controller.js  (Auth, JWT cookies, Profile)  │
+│   ├── product.controller.js   (Catalog, Search, Filters)    │
+│   ├── wishlist.controller.js  (Wishlist management)         │
+│   ├── cart.controller.js      (Cart persistence, Steppers)  │
+│   └── order.controller.js     (Pricing, Razorpay, HMAC)     │
+└──────────────┬──────────────────────────────┬───────────────┘
+               │                              │
+               │ Mongoose ODM                 │ Razorpay SDK / Node crypto
+               ▼                              ▼
+┌──────────────────────────────┐ ┌────────────────────────────┐
+│       MongoDB Database       │ │  Razorpay Payment Gateway  │
+│ Collections:                 │ │  (Test Mode Standard API)  │
+│ - customers (users+cart+wish)│ └────────────────────────────┘
+│ - products  (catalog items)  │
+│ - orders    (snapshots)      │
+└──────────────────────────────┘
 ```
 
-### High-Level Flow Diagram
+### Checkout & Payment Verification Sequence
+
+The diagram below details the interaction between the customer browser, the React client, the Express backend, the MongoDB database, and the Razorpay gateway during order creation and payment verification:
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Customer as Customer (Browser)
-    participant React as React (CartContext / UI)
-    participant Express as Express Backend
+    participant React as React Client (CartContext)
+    participant Express as Express REST API
     participant DB as MongoDB Database
     participant RZP as Razorpay Gateway
 
-    Customer->>React: Add Items & Proceed to Checkout
-    Customer->>React: Submit Shipping Address
+    Customer->>React: Submit Shipping Address & Click Pay
     React->>Express: POST /orders/create-payment-order { shippingAddress }
-    Note over Express: authMiddleware verifies JWT cookie
-    Express->>DB: Fetch Customer Cart & Latest Product Records
-    Note over Express: Validate stock, recalculate trusted totalAmount
+    Note over Express: authMiddleware validates JWT cookie
+    Express->>DB: Fetch Customer Cart & Live Product Records
+    Note over Express: Verify stock levels & calculate server-authoritative totalAmount
     Express->>DB: Create Order (status: PENDING_PAYMENT, paymentStatus: PENDING)
     Express->>RZP: razorpay.orders.create({ amount: totalInPaise, currency: "INR" })
-    RZP-->>Express: Returns razorpay_order_id
-    Express->>DB: Save razorpayOrderId in Order record
+    RZP-->>Express: Returns { id: razorpay_order_id }
+    Express->>DB: Save razorpayOrderId to Order document
     Express-->>React: Return { shopKartOrderId, razorpayOrderId, amount, razorpayKeyId }
     
-    React->>RZP: Open window.Razorpay(options) modal
-    Customer->>RZP: Complete Test Mode Payment
-    RZP-->>React: Return { razorpay_payment_id, razorpay_signature }
+    React->>RZP: window.Razorpay(options).open()
+    Customer->>RZP: Select Test Payment Method & Authorize
+    RZP-->>React: Callback returns { razorpay_payment_id, razorpay_signature }
     
-    React->>Express: POST /orders/verify-payment { orderId, paymentId, signature }
-    Note over Express: Compute HMAC SHA-256 of orderId|paymentId using Key Secret
-    Note over Express: Compare signatures via crypto.timingSafeEqual()
+    React->>Express: POST /orders/verify-payment { shopKartOrderId, razorpay_order_id, razorpay_payment_id, razorpay_signature }
+    Note over Express: Compute HMAC SHA-256(order_id + "|" + payment_id, RAZORPAY_KEY_SECRET)
+    Note over Express: Verify signature via crypto.timingSafeEqual()
+    
     alt Signature Valid
-        Express->>DB: Update Order (status: PLACED, paymentStatus: PAID)
-        Express->>DB: Decrement Product stock ($inc: -quantity)
-        Express->>DB: Clear Customer Cart (cart: [])
+        Express->>DB: Update Order (status: PLACED, paymentStatus: PAID, paymentId)
+        Express->>DB: Atomically decrement product stock ($inc: -quantity)
+        Express->>DB: Clear customer cart in MongoDB (cart: [])
         Express-->>React: Return 200 OK { success: true, order }
         React->>React: clearCart() in CartContext
-        React->>Customer: Navigate to /order-success/:id
+        React->>Customer: Redirect to /order-success/:id
     else Signature Invalid
         Express->>DB: Update Order (paymentStatus: FAILED)
-        Express-->>React: Return 400 Bad Request
-        Note over React: Cart is preserved; display error alert
+        Express-->>React: Return 400 Bad Request { success: false, message: "Invalid payment signature" }
+        Note over React: Cart is preserved; display alert to customer
     end
 ```
 
-### Repository Structure
+### Client-Server Communication & Data Flows
 
-```
-ShopKart/
-├── package.json                   # Root package script runner (dev, dev:backend, dev:frontend, test, lint, build)
-├── .gitignore                     # Root-level ignore (node_modules, logs, .env, .DS_Store)
-├── README.md                      # Comprehensive project documentation
-│
-├── backend/                       # Express & Node.js API Service
-│   ├── .env.example               # Environment template with placeholders
-│   ├── .gitignore                 # Backend-specific ignore
-│   ├── package.json               # Backend dependencies, scripts & engine specs
-│   ├── index.js                   # Application entry point, Express config, MongoDB connection
-│   ├── seed.js                    # Database seeder with sample products
-│   ├── test_suite.js              # Automated test suite for Labs 01 - 05 (72 tests)
-│   ├── test_lab06.js              # Automated test suite for Lab 06 (38 tests)
-│   ├── controllers/               # Business logic & request handling
-│   │   ├── customer.controller.js # Auth, registration, login, profile, password change
-│   │   ├── product.controller.js  # Product catalogue, search, filters, CRUD
-│   │   ├── wishlist.controller.js # Wishlist management and toggling
-│   │   ├── cart.controller.js     # Cart operations, quantity updates, inventory checks
-│   │   └── order.controller.js    # Order generation, Razorpay integration, HMAC verification
-│   ├── middlewares/
-│   │   └── auth.middleware.js     # JWT cookie extraction, verification, req.user binding
-│   ├── models/                    # Mongoose database schemas
-│   │   ├── customer.model.js      # Customer model (includes embedded wishlist & cart arrays)
-│   │   ├── product.model.js       # Product schema (name, description, price, stock, category)
-│   │   └── order.model.js         # Order schema (item snapshots, shipping, payment status)
-│   └── utils/
-│       ├── generateToken.js       # JWT signing utility
-│       └── razorpay.js            # Razorpay SDK initialization & credential validation
-│
-└── frontend/                      # React 19 + Vite Single-Page Application
-    ├── package.json               # Frontend dependencies & build commands
-    ├── vite.config.js             # Vite configuration with API reverse proxy rules
-    ├── index.html                 # HTML shell
-    ├── src/
-    │   ├── main.jsx               # React DOM root entry point
-    │   ├── App.jsx                # React Router setup & route declarations
-    │   ├── App.css                # Base application layout styles
-    │   ├── index.css              # Custom design system, CSS variables & responsive rules
-    │   ├── components/            # Reusable UI components
-    │   │   ├── Navbar.jsx         # Navigation bar with dynamic cart & wishlist counters
-    │   │   ├── ProductCard.jsx    # Product display card with wishlist/cart triggers
-    │   │   └── SearchBar.jsx      # Search input, category dropdown, and price sorting
-    │   ├── context/               # Global state providers
-    │   │   ├── CartContext.jsx    # React Cart state, stepper mutations, clearCart action
-    │   │   └── useCart.js         # Custom consumption hook for CartContext
-    │   ├── pages/                 # Route page components
-    │   │   ├── Register.jsx       # Customer registration page
-    │   │   ├── Login.jsx          # Customer login page
-    │   │   ├── Home.jsx           # Protected customer dashboard
-    │   │   ├── Products.jsx       # Catalog discovery page
-    │   │   ├── ProductDetails.jsx # Detailed single-product view
-    │   │   ├── Wishlist.jsx       # Customer wishlist page
-    │   │   ├── Cart.jsx           # Interactive shopping cart view
-    │   │   ├── Checkout.jsx       # Shipping form & Razorpay payment trigger
-    │   │   ├── OrderSuccess.jsx   # Post-payment confirmation receipt
-    │   │   └── Orders.jsx         # My Orders purchase history page
-    │   └── services/              # API abstraction clients (Axios)
-    │       ├── api.js             # Centralized Axios client with withCredentials: true
-    │       ├── cartService.js     # Cart API integration
-    │       ├── productService.js  # Product API integration
-    │       ├── wishlistService.js # Wishlist API integration
-    │       └── orderService.js    # Order and payment verification API integration
-    └── public/                    # Static assets & icons
-```
+1. **Reverse Proxy Configuration:** In development, Vite's dev server proxies `/customers`, `/products`, `/wishlist`, `/cart`, and `/orders` directly to `http://localhost:5001`. This eliminates cross-origin issues during local development.
+2. **Credentialed Requests:** The central Axios instance in [`frontend/src/services/api.js`](file:///Users/harshitagupta/ShopKart/frontend/src/services/api.js) is configured with `withCredentials: true`, ensuring the browser transmits the `HttpOnly` token cookie on every request.
+3. **Optimistic UI with Authoritative Sync:** State in `CartContext` updates immediately for responsive user feedback, but every mutation synchronizes against the backend to ensure local inventory counts cannot drift from server truth.
 
 ---
 
-## Core User Workflows
+## Repository Structure
 
-### 1. Registration & Authentication Flow
-1. Visitor navigates to `/register` and provides full name, email, password, and phone number.
-2. Backend validates fields, hashes password with `bcrypt.hash(password, 10)`, and saves customer to MongoDB.
-3. Customer navigates to `/login`. Upon successful credential verification, backend signs a JWT payload (`{ sub: customerId }`) and sets an `HttpOnly` cookie named `token`.
-4. Browser stores cookie automatically; subsequent Axios requests send this cookie via `withCredentials: true`.
-5. Authenticated views (`/home`, `/wishlist`, `/cart`, `/checkout`, `/orders`) verify session authenticity via `authMiddleware`.
-
-### 2. Catalog Browsing & Wishlist Flow
-1. User navigates to `/products`.
-2. As user types in the search bar, debounce timer (250ms) fires `GET /products?search=...&category=...&sort=...`.
-3. User clicks heart icon on any card; if authenticated, `POST /wishlist/:productId` adds item reference to `customer.wishlist`.
-4. Navbar wishlist badge increments immediately.
-
-### 3. Shopping Cart Flow
-1. User clicks "Add to Cart" on a product card or product details page.
-2. `CartContext` dispatches `POST /cart/:productId`. Server verifies current inventory before appending item or incrementing quantity.
-3. On `/cart`, user can adjust units with stepper controls (`-` and `+`). Quantities cannot drop below 1 or exceed available product inventory (`product.stock`).
-4. Navbar cart badge displays total accumulated item units across all lines.
-
-### 4. Checkout & Payment Verification Flow
-1. User clicks "Proceed to Checkout" on `/cart` and navigates to `/checkout`.
-2. User fills out shipping address. Client validates 10-digit Indian phone and 6-digit pincode.
-3. Form submission triggers `POST /orders/create-payment-order`.
-4. Backend verifies that the cart is not empty, queries the latest Product records from MongoDB, validates that requested quantities do not exceed current stock, recalculates the trusted server total, and generates a draft Order (`PENDING_PAYMENT`).
-5. Backend creates a Razorpay order via Razorpay SDK with the amount in paise (`Math.round(totalAmount * 100)`).
-6. Frontend opens the Razorpay Standard Checkout modal.
-7. Upon completing test payment, the Razorpay handler submits payment credentials to `POST /orders/verify-payment`.
-8. Backend constructs HMAC SHA-256 signature using `order.razorpayOrderId + "|" + razorpay_payment_id` and `process.env.RAZORPAY_KEY_SECRET`.
-9. Signatures are compared in constant time with `crypto.timingSafeEqual`.
-10. On match:
-    - Order is updated to `status: "PLACED"` and `paymentStatus: "PAID"`.
-    - Inventory is deducted (`$inc: { stock: -quantity }`).
-    - Customer cart in MongoDB is cleared (`customer.cart = []`).
-    - Server returns HTTP 200.
-11. Frontend calls `clearCart()` in `CartContext` and redirects to `/order-success/:id`.
+```
+ShopKart/
+├── package.json                   # Root workspace scripts (dev, test, lint, build)
+├── .gitignore                     # Git ignore rules for dependencies, env files, and logs
+├── README.md                      # Comprehensive project documentation
+│
+├── backend/                       # Node.js & Express API Server
+│   ├── .env.example               # Environment variable configuration template
+│   ├── .gitignore                 # Backend-specific ignore rules
+│   ├── package.json               # Backend dependencies, scripts, and engine metadata
+│   ├── index.js                   # Application entry point, Express middleware & MongoDB setup
+│   ├── seed.js                    # Database seeder populating catalog products
+│   ├── update_product_images.js   # Image migration script for catalog photos
+│   ├── test_suite.js              # Automated regression test suite for Labs 01-05 (72 tests)
+│   ├── test_lab06.js              # Automated test suite for Lab 06 checkout & Razorpay (38 tests)
+│   │
+│   ├── controllers/               # Route controller logic
+│   │   ├── customer.controller.js # Registration, login, profile, and password update
+│   │   ├── product.controller.js  # Catalog retrieval, filtering, search, and details
+│   │   ├── wishlist.controller.js # Wishlist fetch, add, remove, and toggle
+│   │   ├── cart.controller.js     # Cart fetch, add, stepper quantity update, and remove
+│   │   └── order.controller.js    # Order creation, Razorpay integration, HMAC verification
+│   │
+│   ├── middlewares/
+│   │   └── auth.middleware.js     # JWT cookie extraction, verification, and req.user binding
+│   │
+│   ├── models/                    # Mongoose database schemas
+│   │   ├── customer.model.js      # Customer schema with embedded cart & wishlist arrays
+│   │   ├── product.model.js       # Product catalog schema with stock validation
+│   │   └── order.model.js         # Order schema with item snapshots & payment statuses
+│   │
+│   ├── routes/                    # Express route definitions
+│   │   ├── customer.routes.js     # /customers routes
+│   │   ├── product.routes.js      # /products routes
+│   │   ├── wishlist.routes.js     # /wishlist routes
+│   │   ├── cart.routes.js         # /cart routes
+│   │   └── order.routes.js        # /orders routes
+│   │
+│   └── utils/                     # Backend helper utilities
+│       ├── generateToken.js       # JWT signing helper
+│       └── razorpay.js            # Razorpay SDK initialization & credential validation
+│
+└── frontend/                      # React 19 + Vite Single-Page Application
+    ├── .oxlintrc.json             # Oxlint linter configuration
+    ├── package.json               # Frontend dependencies, build commands, and dev scripts
+    ├── vite.config.js             # Vite configuration with API reverse proxy rules
+    ├── index.html                 # HTML application entry point
+    │
+    ├── public/                    # Static public assets
+    │   ├── logo.png               # ShopKart logo (light background variant)
+    │   ├── logo-dark.png          # ShopKart logo (dark background variant)
+    │   └── logo-icon.png          # Standalone cart monogram & browser favicon
+    │
+    └── src/
+        ├── main.jsx               # React DOM initialization
+        ├── App.jsx                # React Router DOM route hierarchy & CartProvider wrapper
+        ├── index.css              # Cobalt-Blue design tokens, typography, and responsive styles
+        │
+        ├── assets/                # Bundled graphic assets
+        │   ├── logo.png           # Bundled light-variant logo
+        │   ├── logo-dark.png      # Bundled dark-variant logo
+        │   └── logo-icon.png      # Bundled brand icon
+        │
+        ├── components/            # Reusable UI components
+        │   ├── Navbar.jsx         # Header navigation with brand logo & dynamic badge counters
+        │   ├── Footer.jsx         # Global storefront footer with dark logo variant
+        │   ├── ProductCard.jsx    # Product display card with wishlist & cart triggers
+        │   ├── SearchBar.jsx      # Search input, category dropdown, and price sort controls
+        │   └── ShopKartLogo.jsx   # Responsive brand logo component supporting light/dark variants
+        │
+        ├── context/               # Global state providers
+        │   ├── CartContext.jsx    # React Cart Context provider managing cart state & sync
+        │   └── useCart.js         # Custom consumer hook for CartContext
+        │
+        ├── pages/                 # Route page components
+        │   ├── Home.jsx           # Storefront landing page & customer dashboard (/home)
+        │   ├── Products.jsx       # Dynamic product catalog & filtering (/products)
+        │   ├── ProductDetails.jsx # Detailed single-product view (/products/:id)
+        │   ├── Wishlist.jsx       # Customer wishlist (/wishlist)
+        │   ├── Cart.jsx           # Interactive shopping cart (/cart)
+        │   ├── Checkout.jsx       # Shipping address form & Razorpay trigger (/checkout)
+        │   ├── OrderSuccess.jsx   # Order confirmation & receipt (/order-success/:id)
+        │   ├── Orders.jsx         # Order history page (/orders)
+        │   ├── Login.jsx          # Customer login (/login)
+        │   └── Register.jsx       # Customer registration (/register)
+        │
+        ├── services/              # API communication layer (Axios)
+        │   ├── api.js             # Base Axios instance with withCredentials: true
+        │   ├── productService.js  # Catalog API calls
+        │   ├── wishlistService.js # Wishlist API calls
+        │   ├── cartService.js     # Cart API calls
+        │   └── orderService.js    # Order & payment verification API calls
+        │
+        └── utils/                 # Frontend helper utilities
+            └── productImages.js   # Deterministic fallback image resolver by category/keyword
+```
 
 ---
 
 ## Prerequisites
 
-Before running ShopKart locally, ensure you have:
+Before running ShopKart locally, ensure your environment meets the following requirements:
 
-- **Node.js**: `v18.x` or `v20.x` LTS ([Download Node.js](https://nodejs.org/))
-- **npm**: `v9.x` or `v10.x` (bundled with Node.js)
-- **MongoDB**: Active MongoDB database instance (Local MongoDB on `mongodb://127.0.0.1:27017/shopkart` or a [MongoDB Atlas](https://www.mongodb.com/atlas) connection URI)
-- **Razorpay Account (Test Mode)**: Free account on [Razorpay](https://dashboard.razorpay.com/) to obtain Test API Keys (`Key ID` and `Key Secret`)
-- **Git**: Installed command-line Git client
+- **Node.js:** `v18.x` or `v20.x` LTS recommended (tested on Node.js `>= 18.0.0`)
+- **npm:** `v9.x` or `v10.x` (bundled with Node.js)
+- **MongoDB:** Active MongoDB instance:
+  - Local installation running at `mongodb://127.0.0.1:27017/shopkart`, OR
+  - A [MongoDB Atlas](https://www.mongodb.com/atlas) connection URI
+- **Razorpay Account (Test Mode):** Free account at [Razorpay Dashboard](https://dashboard.razorpay.com/) to obtain test API credentials (`Key ID` starting with `rzp_test_` and `Key Secret`)
+- **Git:** Command-line Git installed
 
 ---
 
 ## Local Installation & Setup
+
+Follow these steps to set up and run ShopKart locally:
 
 ### 1. Clone the Repository
 ```bash
@@ -334,28 +380,27 @@ git clone https://github.com/CodedStars-hub/ShopKart.git
 cd ShopKart
 ```
 
-### 2. Configure Backend Environment
-Navigate into the backend directory and copy the environment template:
+### 2. Configure Backend Environment Variables
+Navigate into the `backend/` directory, copy the environment template, and populate your credentials:
 ```bash
 cd backend
 cp .env.example .env
 ```
-Open `.env` and fill in your configuration:
+Open `backend/.env` in your editor and configure the variables:
 ```env
 PORT=5001
 MONGO_URI=mongodb://127.0.0.1:27017/shopkart
-JWT_SECRET=your_super_secret_jwt_key_here
+JWT_SECRET=your_secure_random_jwt_secret_here
 JWT_EXPIRES_IN=1d
 NODE_ENV=development
 RAZORPAY_KEY_ID=rzp_test_your_key_id_here
 RAZORPAY_KEY_SECRET=your_razorpay_key_secret_here
 ```
-> ⚠️ **Security Notice**: Never commit `.env` to Git. The `.gitignore` file is configured to keep it private.
+> ⚠️ **Important Security Rule:** Never commit `backend/.env` to version control. Both root `.gitignore` and `backend/.gitignore` are configured to prevent tracking environment files.
 
 ### 3. Install Dependencies
-Install packages for both tiers from the repository root:
+Return to the project root and install packages for both the backend and frontend:
 ```bash
-# Return to root directory if inside backend/
 cd ..
 
 # Install backend dependencies
@@ -365,81 +410,78 @@ npm --prefix backend install
 npm --prefix frontend install
 ```
 
-### 4. Seed Sample Product Catalog
-Populate MongoDB with default e-commerce products across multiple categories:
+### 4. Seed the Product Catalog
+Populate your MongoDB database with sample catalog products across Electronics, Fashion, Books, and Home categories:
 ```bash
 npm --prefix backend run seed
 ```
 
 ### 5. Start Development Servers
-
-You can start both frontend and backend concurrently using the root runner:
+You can start both tiers simultaneously from the repository root:
 ```bash
 npm run dev
 ```
 
-Or run them in separate terminals:
+Alternatively, you can run them in separate terminal sessions:
 
 **Terminal 1 (Backend API Service):**
 ```bash
-npm --prefix backend run dev
-# Starts backend server on http://localhost:5001 with node --watch
+npm run dev:backend
+# Express API starts on http://localhost:5001 with node --watch
 ```
 
 **Terminal 2 (Frontend Client):**
 ```bash
-npm --prefix frontend run dev
-# Starts Vite development server on http://localhost:5173
+npm run dev:frontend
+# Vite development server starts on http://localhost:5173
 ```
 
-### 6. Access the Application
-Open your browser and navigate to:
-```
-http://localhost:5173
-```
+### 6. Verify and Access the Application
+- Open your browser and navigate to: **`http://localhost:5173`**
+- The backend health endpoint is accessible at: **`http://localhost:5001/`**
 
 ---
 
 ## Environment Variables
 
-All environment variables used by the backend are detailed below:
+All environment variables used by the application are defined in `backend/.env` (see [`backend/.env.example`](file:///Users/harshitagupta/ShopKart/backend/.env.example)):
 
-| Variable | Scope | Description | Required | Example Placeholder |
-|---|---|---|:---:|---|
-| `PORT` | Backend | Port number for Express server | No (Default: `5000`) | `5001` |
-| `MONGO_URI` | Backend | MongoDB connection string (Local or Atlas) | **Yes** | `mongodb://127.0.0.1:27017/shopkart` |
-| `JWT_SECRET` | Backend | Cryptographic secret for signing JWT auth tokens | **Yes** | `your_secret_jwt_key_random_string` |
-| `JWT_EXPIRES_IN` | Backend | Token validity duration | No (Default: `1d`) | `1d` |
-| `NODE_ENV` | Backend | Environment mode (`development` / `production`) | No (Default: `development`) | `development` |
-| `RAZORPAY_KEY_ID` | Backend | Public Key ID for Razorpay Test Mode gateway | **Yes** | `rzp_test_XXXXXXXXXXXXXX` |
-| `RAZORPAY_KEY_SECRET` | Backend | Private Secret Key for HMAC SHA-256 signatures | **Yes** | `XXXXXXXXXXXXXXXXXXXXXXXX` |
+| Variable | Tier | Required | Purpose | Safe Example Placeholder |
+|---|:---:|:---:|---|---|
+| `PORT` | Backend | No | Port number on which the Express server listens (default: `5000`) | `5001` |
+| `MONGO_URI` | Backend | **Yes** | MongoDB connection string (Local or MongoDB Atlas) | `mongodb://127.0.0.1:27017/shopkart` |
+| `JWT_SECRET` | Backend | **Yes** | Cryptographic secret key used to sign and verify session JWTs | `your_secure_random_jwt_secret` |
+| `JWT_EXPIRES_IN` | Backend | No | Lifespan of generated JWT tokens (default: `1d`) | `1d` |
+| `NODE_ENV` | Backend | No | Node execution environment (`development` / `production`) | `development` |
+| `RAZORPAY_KEY_ID` | Backend | **Yes** | Public Key ID for Razorpay Test Mode integration | `rzp_test_your_key_id` |
+| `RAZORPAY_KEY_SECRET` | Backend | **Yes** | Secret Key used to generate and verify HMAC SHA-256 signatures | `your_razorpay_key_secret` |
 
-> 🔒 **Critical Security Rule**:
-> - `RAZORPAY_KEY_SECRET` is **strictly backend-only**. It is never referenced in frontend code, never returned in API responses, and never logged.
-> - The frontend receives only `RAZORPAY_KEY_ID` from the backend order creation endpoint to initialize the payment modal.
+> 🔒 **Critical Security Architecture:**
+> - `RAZORPAY_KEY_SECRET` is **strictly backend-only**. It is never imported into frontend code, never returned in API payloads, and never logged.
+> - The frontend receives only `razorpayKeyId` inside the order response payload to initialize the client-side checkout modal.
 
 ---
 
 ## REST API Reference
 
-All protected endpoints require the `token` cookie set upon login.
+All protected endpoints require the `token` cookie set during customer login.
 
-### Authentication Endpoints (`/customers`)
+### Customer Endpoints (`/customers`)
 
-| Method | Endpoint | Auth | Description |
-|---|---|:---:|---|
-| `POST` | `/customers/register` | Public | Register new customer account |
-| `POST` | `/customers/login` | Public | Authenticate customer and set HttpOnly JWT cookie |
-| `GET` | `/customers/me` | **Required** | Get profile of authenticated customer |
-| `POST` | `/customers/logout` | **Required** | Clear authentication cookie |
-| `PATCH`| `/customers/change-password` | **Required** | Update password after verifying old password |
+| Method | Endpoint | Auth | Description | Request Body / Parameters |
+|---|---|:---:|---|---|
+| `POST` | `/customers/register` | Public | Register a new customer account | `{ fullName, email, password, phone }` |
+| `POST` | `/customers/login` | Public | Authenticate customer and set HttpOnly JWT cookie | `{ email, password }` |
+| `GET` | `/customers/me` | **Required** | Retrieve authenticated customer profile | None |
+| `POST` | `/customers/logout` | **Required** | Clear authentication session cookie | None |
+| `PATCH`| `/customers/change-password` | **Required** | Update password with old-password verification | `{ oldPassword, newPassword }` |
 
-#### Sample Registration Request (`POST /customers/register`):
+#### Registration Request Example (`POST /customers/register`):
 ```json
 {
   "fullName": "Aarav Sharma",
   "email": "aarav@example.com",
-  "password": "password123",
+  "password": "Password123!",
   "phone": "9876543210"
 }
 ```
@@ -448,54 +490,52 @@ All protected endpoints require the `token` cookie set upon login.
 
 ### Product Endpoints (`/products`)
 
-| Method | Endpoint | Auth | Description |
-|---|---|:---:|---|
-| `GET` | `/products` | Public | List products (Supports `?search=`, `?category=`, `?sort=`) |
-| `GET` | `/products/:id` | Public | Retrieve single product details by MongoDB ObjectId |
-| `POST` | `/products` | Public | Create new product (Catalog management) |
-| `PUT` | `/products/:id` | Public | Update existing product details |
-| `DELETE`| `/products/:id` | Public | Remove product from catalog |
+| Method | Endpoint | Auth | Description | Query / Body Parameters |
+|---|---|:---:|---|---|
+| `GET` | `/products` | Public | List catalog products with search, filter, and sort | `?search=keyboard&category=Electronics&sort=price_asc` |
+| `GET` | `/products/:id` | Public | Retrieve detailed product record by MongoDB ObjectId | Path param: `:id` |
+| `POST` | `/products` | Public | Add a new product to catalog | `{ name, description, price, category, image, stock }` |
 
 ---
 
 ### Wishlist Endpoints (`/wishlist`)
 
-| Method | Endpoint | Auth | Description |
-|---|---|:---:|---|
-| `GET` | `/wishlist` | **Required** | Retrieve populated wishlist items for logged-in customer |
-| `POST` | `/wishlist/:productId` | **Required** | Add product to customer wishlist |
-| `DELETE`| `/wishlist/:productId` | **Required** | Remove product from customer wishlist |
-| `POST` | `/wishlist/toggle/:productId` | **Required** | Toggle product in/out of wishlist |
+| Method | Endpoint | Auth | Description | Parameters |
+|---|---|:---:|---|---|
+| `GET` | `/wishlist` | **Required** | Retrieve populated wishlist items for authenticated customer | None |
+| `POST` | `/wishlist/:productId` | **Required** | Add a product to customer wishlist (returns 409 if duplicate) | Path param: `:productId` |
+| `DELETE`| `/wishlist/:productId` | **Required** | Remove a product from customer wishlist (returns 404 if not found)| Path param: `:productId` |
+| `PATCH`| `/wishlist/:productId/toggle` | **Required** | Toggle product in/out of wishlist (returns `{ saved: boolean }`)| Path param: `:productId` |
 
 ---
 
 ### Cart Endpoints (`/cart`)
 
-| Method | Endpoint | Auth | Description |
-|---|---|:---:|---|
-| `GET` | `/cart` | **Required** | Fetch populated cart items for logged-in customer |
-| `POST` | `/cart/:productId` | **Required** | Add product to cart or increment quantity by 1 |
-| `PATCH`| `/cart/:productId` | **Required** | Update specific cart item quantity (`{ quantity: 3 }`) |
-| `DELETE`| `/cart/:productId` | **Required** | Remove product line from customer cart |
+| Method | Endpoint | Auth | Description | Request Body / Parameters |
+|---|---|:---:|---|---|
+| `GET` | `/cart` | **Required** | Fetch populated cart items for authenticated customer | None |
+| `POST` | `/cart/:productId` | **Required** | Add item to cart or increment quantity by 1 | Path param: `:productId` |
+| `PATCH`| `/cart/:productId` | **Required** | Set specific quantity for cart item (bounded by stock) | Path: `:productId`, Body: `{ quantity: 3 }` |
+| `DELETE`| `/cart/:productId` | **Required** | Remove item line completely from customer cart | Path param: `:productId` |
 
 ---
 
 ### Order & Payment Endpoints (`/orders`)
 
-| Method | Endpoint | Auth | Description |
-|---|---|:---:|---|
-| `POST` | `/orders/create-payment-order` | **Required** | Validate cart/stock, compute server total, create Razorpay order |
-| `POST` | `/orders/verify-payment` | **Required** | Verify HMAC payment signature, mark PAID, deduct stock, clear cart |
-| `GET` | `/orders` | **Required** | List all orders belonging to authenticated customer (newest first) |
-| `GET` | `/orders/:id` | **Required** | Retrieve full details of an order owned by the authenticated customer |
+| Method | Endpoint | Auth | Description | Request Body / Parameters |
+|---|---|:---:|---|---|
+| `POST` | `/orders/create-payment-order` | **Required** | Validate stock, compute server total, create Razorpay order | `{ shippingAddress: { fullName, phone, addressLine1, city, state, pincode } }` |
+| `POST` | `/orders/verify-payment` | **Required** | Verify HMAC payment signature, mark PAID, deduct stock, clear cart | `{ shopKartOrderId, razorpay_order_id, razorpay_payment_id, razorpay_signature }` |
+| `GET` | `/orders` | **Required** | List all orders placed by authenticated customer (newest first) | None |
+| `GET` | `/orders/:id` | **Required** | Retrieve single order details (enforces customer ownership) | Path param: `:id` |
 
-#### Sample Create Payment Order Request (`POST /orders/create-payment-order`):
+#### Create Payment Order Request (`POST /orders/create-payment-order`):
 ```json
 {
   "shippingAddress": {
     "fullName": "Aarav Sharma",
     "phone": "9876543210",
-    "addressLine1": "22 MG Road, Koramangala",
+    "addressLine1": "Flat 402, Sunshine Apartments, MG Road",
     "city": "Bengaluru",
     "state": "Karnataka",
     "pincode": "560001"
@@ -503,7 +543,7 @@ All protected endpoints require the `token` cookie set upon login.
 }
 ```
 
-#### Sample Create Payment Order Response (`201 Created`):
+#### Create Payment Order Response (`201 Created`):
 ```json
 {
   "success": true,
@@ -511,11 +551,11 @@ All protected endpoints require the `token` cookie set upon login.
   "razorpayOrderId": "order_NXyz1234567890",
   "amount": 299900,
   "currency": "INR",
-  "razorpayKeyId": "rzp_test_XXXXXXXXXXXXXX"
+  "razorpayKeyId": "rzp_test_your_key_id"
 }
 ```
 
-#### Sample Payment Verification Request (`POST /orders/verify-payment`):
+#### Verify Payment Request (`POST /orders/verify-payment`):
 ```json
 {
   "shopKartOrderId": "66d1234567890abcdef12345",
@@ -527,9 +567,7 @@ All protected endpoints require the `token` cookie set upon login.
 
 ---
 
-## Database Schema & Data Modeling
-
-ShopKart utilizes three primary collections in MongoDB: `customers`, `products`, and `orders`.
+## Database Models & Relationships
 
 ### Entity Relationship Diagram
 
@@ -586,174 +624,157 @@ erDiagram
     }
 ```
 
-### Design Rationale
+### Data Design Rationale
 
-1. **Embedded Cart & Wishlist in Customer:**
-   - E-commerce cart lookups and updates occur frequently for a single user. Embedding cart items as `{ product: ObjectId, quantity: Number }` inside the `Customer` document provides single-document atomic updates and avoids extra collection joins.
-2. **Snapshot Modeling in Order Items:**
-   - Order items in `Order.items` store embedded snapshots:
+1. **Embedded Cart & Wishlist Arrays in `Customer`:**
+   - E-commerce cart and wishlist queries occur on nearly every authenticated request. Embedding them as subdocuments within the `Customer` document allows atomic updates via MongoDB array operators (`$push`, `$pull`, `$set`), eliminating multi-collection joins and maintaining fast reads.
+2. **Item Snapshot Architecture in `Order`:**
+   - Instead of referencing catalog products dynamically, each item in `order.items` stores an immutable snapshot:
      ```javascript
      {
-       product: ObjectId,
-       name: String,
-       price: Number,
-       quantity: Number,
-       image: String
+       product: ObjectId,  // Original catalog reference
+       name: String,        // Purchase-time product title
+       price: Number,       // Purchase-time unit price
+       quantity: Number,    // Units purchased
+       image: String        // Product image URL at checkout
      }
      ```
-   - This ensures that if product catalog details (like price or description) change in the future, past order records and invoices remain completely unchanged.
-3. **Reference Integrity:**
-   - `Order.user` explicitly references `"Customer"` with Mongoose ObjectId types, maintaining referential integrity and user ownership enforcement.
+   - This ensures that subsequent catalog price revisions, product description edits, or deletions never alter historical invoices or order accounting records.
+3. **Referential Integrity on Orders:**
+   - `order.user` holds a strict `ref: "Customer"` reference, ensuring every order is permanently associated with its owner for authorization checks.
 
 ---
 
 ## Security & Validation Architecture
 
-ShopKart implements layered security controls across both tiers:
-
-1. **HttpOnly Cookie Architecture (XSS Protection):**
-   - Authentication tokens are delivered strictly via `HttpOnly` cookies. JavaScript running in the browser cannot read `document.cookie`, preventing token exfiltration via Cross-Site Scripting (XSS).
-2. **Server-Side Authoritative Totals (Tamper Prevention):**
-   - The client never dictates prices or totals. Even if an attacker modifies client-side JavaScript or submits a modified JSON body (`totalAmount: 1`), the backend calculates the checkout total by multiplying quantities with trusted database prices.
-3. **Inventory Race Condition Mitigation:**
-   - Product stock is verified both when adding to cart and during checkout order creation. Upon verified payment, stock is atomically decremented using MongoDB's `$inc` operator.
-4. **Timing-Safe HMAC SHA-256 Signature Verification:**
-   - Signatures generated by Razorpay are verified on the server using `crypto.timingSafeEqual` with buffer length guards. This eliminates timing side-channel attacks.
-5. **Strict Data Access Isolation:**
-   - Every cart, wishlist, and order query filters records by `req.user._id` (derived from the verified JWT cookie). Accessing another customer's order ID returns HTTP 403 Forbidden.
-6. **Input Sanitization & Validation:**
-   - Client-side validation is backed by strict server-side validation. Whitespace-only strings, malformed phone numbers, and invalid postal codes are rejected with descriptive HTTP 400 Bad Request responses.
-7. **Safe Failure Handling:**
-   - If gateway order creation fails or signature verification fails, customer carts are preserved and orders are marked `FAILED`. No user loses their cart due to a payment interruption.
+| Security Domain | Implemented Protection | Verification Mechanism |
+|---|---|---|
+| **Credential Storage** | Salted bcrypt password hashing | Passwords hashed with 10 salt rounds; plaintext is never persisted or logged |
+| **Session Security** | HttpOnly JWT browser cookies | Tokens delivered in `HttpOnly`, `SameSite` cookies; inaccessible to JavaScript (`document.cookie`), mitigating XSS token theft |
+| **Route Protection** | `authMiddleware` | Decodes JWT cookie, verifies user existence in MongoDB, and rejects unauthenticated requests with HTTP 401 |
+| **Price Tampering** | Server-authoritative recalculation | Client-submitted totals are ignored; backend multiplies item quantities by live database prices |
+| **Currency Drift** | Integer paise conversion | Totals converted to integer paise (`Math.round(totalAmount * 100)`) preventing floating-point rounding errors |
+| **Payment Authenticity**| HMAC SHA-256 signature verification | Backend hashes `order_id + "|" + payment_id` with `RAZORPAY_KEY_SECRET` and checks equality with `crypto.timingSafeEqual` |
+| **Inventory Guards** | Multi-phase stock validation | Stock verified upon adding to cart, re-checked at checkout order creation, and atomically decremented via `$inc: -quantity` upon verified payment |
+| **Cart Preservation** | Deferred cart clearing | Cart is cleared in MongoDB only after cryptographic signature verification succeeds; payment cancellations preserve cart state |
+| **Data Isolation** | Scoped user queries | Orders, carts, and wishlists are queried exclusively by authenticated `req.user._id`; unauthorized access returns HTTP 403 |
+| **Input Sanitization** | Regex and type validation | Client and server enforce non-empty strings, 10-digit Indian phone numbers, 6-digit postal pincodes, and sanitized search queries |
 
 ---
 
-## Available Scripts & Automated Testing
+## Testing & Quality Checks
 
-### Root Directory Scripts
+### Automated Test Suite Summary
+
+The backend includes comprehensive automated test runners executing **110 integration tests** against a live MongoDB connection:
+
 ```bash
-npm run dev           # Concurrently start backend (port 5001) and frontend (port 5173)
-npm run dev:backend   # Start backend only in development mode
-npm run dev:frontend  # Start frontend only in development mode
-npm test              # Run complete backend test suite (Labs 01 - 06)
-npm run lint          # Run frontend linter (Oxlint)
-npm run build         # Build production frontend bundle
+# Run all 110 tests from project root
+npm test
 ```
 
-### Backend Directory Scripts (`backend/`)
+#### Breakdown of Executed Test Suites:
+- **`npm run test:labs1-5` (72 Tests - `backend/test_suite.js`):**
+  - Customer registration, duplicate email rejection, bcrypt verification, login, JWT cookie issuance, authenticated profile lookup.
+  - Product creation, invalid field validation, catalog retrieval, single-product lookup, debounced search, category filter, price sorting.
+  - Wishlist item addition, duplicate addition rejection (409), populated retrieval, item removal, user isolation, toggle route.
+  - Cart addition, item deduplication, quantity increments, stock-limit boundary enforcement, quantity reduction, item deletion, multi-user cart isolation, database persistence.
+- **`npm run test:lab06` (38 Tests - `backend/test_lab06.js`):**
+  - Unauthenticated access rejection across all checkout and order routes (401).
+  - Empty cart rejection (400), invalid shipping address validation (name, phone format, 6-digit pincode).
+  - Stock deficit detection during order creation, deleted product detection.
+  - Server total calculation ignoring client price tampering.
+  - Order document generation, cart preservation during pending payment.
+  - Fake signature rejection (400), order marking as `FAILED`, cart preservation on fake signature.
+  - Valid HMAC SHA-256 signature verification (200), order status transition to `PAID` / `PLACED`.
+  - Atomic stock decrement in MongoDB, authenticated customer cart clearing.
+  - Verification idempotency, cross-customer order isolation (403), historical price snapshot verification after catalog modifications.
+
+```
+==================================================
+SHOPKART AUTOMATED TEST RUNNER RESULTS
+==================================================
+  ✓ Labs 01 - 05 Regression Test Suite:  72 / 72 PASSED
+  ✓ Lab 06 Checkout & Razorpay Suite:     38 / 38 PASSED
+==================================================
+  TOTAL: 110 / 110 TESTS PASSED (100% PASS RATE)
+==================================================
+```
+
+### Code Quality & Build Verification
+
 ```bash
-npm start             # Start Express server in production mode
-npm run dev           # Start Express server with file watch mode (node --watch)
-npm test              # Run complete test runner (72 regression tests + 38 Lab 06 tests)
-npm run test:labs1-5  # Run test suite verifying Labs 01 through 05
-npm run test:lab06    # Run dedicated test suite for Lab 06 checkout & Razorpay flow
-npm run seed          # Seed MongoDB with sample products
+# Frontend static analysis via Oxlint
+npm run lint
+
+# Frontend production build compilation
+npm run build
 ```
-
-### Frontend Directory Scripts (`frontend/`)
-```bash
-npm run dev           # Start Vite development server (port 5173)
-npm run build         # Build optimized production bundle into dist/
-npm run lint          # Lint frontend JavaScript and JSX files with Oxlint
-npm run preview       # Preview production build locally
-```
-
-### Automated Test Coverage Summary
-
-Running `npm test` executes **110 automated tests** against live MongoDB instances:
-
-```
-==================================================
-RUNNING SHOPKART BACKEND AUTOMATED TEST SUITE
-==================================================
-  ✓ LAB 01: Customer Registration, Password Hashing, Duplicate Prevention, Login, JWT Cookies, Profile
-  ✓ LAB 03: Product Catalog, Single Product, ID Validation, Search, Category Filter, Sorting
-  ✓ LAB 04: Wishlist Addition, Duplicate Prevention, Populated Fetch, Removal, Isolation, Toggle
-  ✓ LAB 05: Cart Addition, Row Deduplication, Quantity Updates, Inventory Validation, Cart Persistence
-  ==================================================
-  ALL 72/72 TESTS PASSED SUCCESSFULLY!
-  ==================================================
-
-==================================================
-RUNNING SHOPKART LAB 06 AUTOMATED TEST SUITE
-==================================================
-  ✓ 1. Unauthenticated checks return 401 across all order endpoints
-  ✓ 2. Empty cart order creation rejected with 400
-  ✓ 3. Shipping validation: empty fields, whitespace, invalid phone, non-6-digit pincode rejected
-  ✓ 4. Stock validation: stock overflow and deleted products rejected
-  ✓ 5. Server calculation: ignores client total tampering, computes trusted total
-  ✓ 6. Database cart preserved during checkout creation
-  ✓ 7. Fake signature rejected with 400; order marked FAILED; cart preserved
-  ✓ 8. Valid HMAC SHA-256 signature verified with 200 OK; order marked PAID and PLACED
-  ✓ 9. Product stock decremented atomically upon verification
-  ✓ 10. Database cart cleared only after verification passes
-  ✓ 11. Idempotent response for repeated verification attempts
-  ✓ 12. Cross-user access to orders denied with 403 Forbidden
-  ✓ 13. Historical order retains purchase-time price and name snapshots after product edits
-  ==================================================
-  ALL LAB 06 TESTS PASSED! (38/38 PASS)
-  ==================================================
-```
+- **Linter Status:** **0 warnings, 0 errors** across 26 files (104 rules checked with Oxlint).
+- **Production Build:** Vite bundle built cleanly in ~170ms with optimized asset chunking.
 
 ---
 
-## Troubleshooting Guide
+## Troubleshooting
 
-### 1. MongoDB Connection Error (`querySrv ECONNREFUSED` or timeout)
+### 1. MongoDB Connection Timeout or `querySrv ECONNREFUSED`
 - **Cause:** Network DNS restriction or invalid connection string in `backend/.env`.
-- **Solution:** 
-  - If using MongoDB Atlas, verify your IP address is whitelisted in MongoDB Atlas Network Access (`0.0.0.0/0` for development).
+- **Solution:**
+  - If using MongoDB Atlas, ensure your current IP address is added to the IP Access List in the MongoDB Atlas dashboard (`0.0.0.0/0` allows access from any network during development).
   - If using local MongoDB, ensure the MongoDB daemon is active (`brew services start mongodb-community` on macOS, or `sudo systemctl start mongod` on Linux).
 
 ### 2. Port Already in Use (`EADDRINUSE: :::5001` or `5173`)
-- **Cause:** A previous Node or Vite process is still running in the background.
+- **Cause:** A previous Node.js or Vite process is lingering on the target port.
 - **Solution:**
   ```bash
-  # Check and kill process on port 5001
-  lsof -i :5001
-  kill -9 <PID>
-
-  # Check and kill process on port 5173
-  lsof -i :5173
-  kill -9 <PID>
+  # Find and terminate processes on ports 5001 and 5173
+  lsof -ti :5001 | xargs kill -9
+  lsof -ti :5173 | xargs kill -9
   ```
 
-### 3. Razorpay Script Loading Failure
-- **Cause:** Network interruption or content blockers blocking `https://checkout.razorpay.com/v1/checkout.js`.
-- **Solution:** Verify your internet connection. Disable browser extensions that block external payment gateway scripts during testing.
+### 3. Razorpay Signature Verification Failure (HTTP 400)
+- **Cause:** Discrepancy between `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` in `backend/.env`.
+- **Solution:**
+  - Verify that both keys originate from the same Razorpay account.
+  - Ensure the keys are generated in **Test Mode** (Key IDs begin with `rzp_test_`).
+  - Restart the backend server after editing `.env` to load the updated credentials.
 
-### 4. Razorpay Signature Verification Failed (HTTP 400)
-- **Cause:** Mismatched `RAZORPAY_KEY_SECRET` between your Razorpay Dashboard and `backend/.env`.
-- **Solution:** Verify that both `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` in `backend/.env` belong to the exact same Razorpay account and are in **Test Mode** (Key IDs start with `rzp_test_`).
+### 4. Authentication Cookie Not Stored / 401 Unauthorized in Browser
+- **Cause:** Accessing the frontend via IP address rather than `localhost`, or cross-origin cookie restrictions.
+- **Solution:**
+  - Access the application strictly through **`http://localhost:5173`**.
+  - Requests must traverse the Vite reverse proxy configured in `frontend/vite.config.js` to ensure the cookie origin matches.
 
-### 5. Cookies Not Being Stored or 401 Unauthorized in Browser
-- **Cause:** Cross-origin cookie blocking or opening the frontend via IP instead of `localhost`.
-- **Solution:** Access the application strictly through `http://localhost:5173`. Ensure requests go through the Vite reverse proxy configured in `frontend/vite.config.js`.
+### 5. Razorpay Checkout Modal Fails to Open
+- **Cause:** Ad-blockers or browser privacy extensions blocking the external script (`checkout.razorpay.com/v1/checkout.js`).
+- **Solution:** Temporarily disable content blockers or whitelist `http://localhost:5173` in your browser.
 
 ---
 
 ## Project Status & Roadmap
 
-ShopKart has achieved 100% completion across all Engineering Labs (01 through 06):
-- [x] **Lab 01**: Customer Authentication, Bcrypt Hashing, JWT HttpOnly Cookies
-- [x] **Lab 02**: Responsive Layout & Core CSS Design Tokens
-- [x] **Lab 03**: Dynamic Product Catalog, Full-Text Search, Filtering & Sorting
-- [x] **Lab 04**: Customer Wishlist with Real-Time Counters & Toggle Actions
-- [x] **Lab 05**: Persistent Shopping Cart, Stepper Controls & Global Context State
-- [x] **Lab 06**: Checkout Flow, Razorpay Test Payments, HMAC Verification & Order History
+ShopKart has achieved complete implementation across all six engineering lab stages:
 
-### Potential Future Improvements
-- [ ] **Webhook Handling:** Add Razorpay Webhooks (`payment.captured`, `payment.failed`) for asynchronous out-of-band payment reconciliation.
-- [ ] **Order Invoicing:** PDF invoice generation and automated email dispatch upon successful checkout.
-- [ ] **Admin Dashboard:** Role-based access control for inventory and order status management.
-- [ ] **CI/CD Pipeline:** GitHub Actions workflow for automated linting, test execution, and deployment.
+- [x] **Lab 01:** Customer Registration, Password Hashing, JWT HttpOnly Session Cookies
+- [x] **Lab 02:** Responsive UI Foundations & Cohesive Cobalt-Blue Design System
+- [x] **Lab 03:** Dynamic Product Catalog, Debounced Search, Category Filtering & Price Sorting
+- [x] **Lab 04:** Customer Wishlist with Real-Time Counters & Database Isolation
+- [x] **Lab 05:** Persistent Shopping Cart, Stepper Controls & Global React Context
+- [x] **Lab 06:** Checkout Shipping Validation, Razorpay Test Payments, HMAC Verification & Order History
+
+### Future Considerations & Production Enhancements
+- [ ] **Asynchronous Webhooks:** Implement Razorpay webhooks (`payment.captured`, `payment.failed`) to reconcile payments in the event of client-side browser disconnects.
+- [ ] **Automated Invoicing:** Generate downloadable PDF receipts and automated confirmation emails upon successful payment.
+- [ ] **Administrative Dashboard:** Role-based portal for inventory management, product updates, and order fulfillment status updates.
+- [ ] **CI/CD Automation:** GitHub Actions workflow running Oxlint and automated test suites on pull requests.
 
 ---
 
-## License and Attribution
+## License & Attribution
 
-- **License:** Developed for academic evaluation under the Engineering Laboratory curriculum. Formal software licensing to be determined.
-- **Third-Party Libraries & Services:**
-  - UI Icons & Imagery: Unsplash open-source photography.
-  - Payment Processing: Razorpay Software Development Kit (Test Mode).
-  - Open Source Dependencies: Node.js, Express, React, Vite, Mongoose, Axios, bcrypt, jsonwebtoken.
+- **Academic Context:** Developed as an engineering laboratory project under the MERN Stack curriculum.
+- **Backend License Specification:** Backend `package.json` specifies `"license": "ISC"`.
+- **External Services & Libraries:**
+  - Payment Gateway: [Razorpay](https://razorpay.com/) (Test Mode API).
+  - Photography Assets: High-resolution catalog photography sourced from [Unsplash](https://unsplash.com/).
+  - Open Source Ecosystem: Node.js, Express, React, Vite, MongoDB, Mongoose, Axios, bcrypt, jsonwebtoken, and cookie-parser.

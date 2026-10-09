@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
 import ProductCard from '../components/ProductCard';
+import Footer from '../components/Footer';
 import { getProducts } from '../services/productService';
 import { getWishlist } from '../services/wishlistService';
 
@@ -11,16 +13,19 @@ import { getWishlist } from '../services/wishlistService';
  *
  * Fetches products dynamically from GET /products.
  * Supports server-side search, category filtering, and sorting.
+ * Supports URL query parameters (?category=... & ?search=...).
  * Tracks wishlist state for authenticated customers.
  */
 function Products() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const category = searchParams.get('category') || '';
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Search, filter, and sorting state
+  // Search and sorting state
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('');
   const [sort, setSort] = useState('');
 
   // Wishlist item IDs set for fast O(1) lookup
@@ -95,7 +100,13 @@ function Products() {
 
   const handleCategoryChange = (val) => {
     setLoading(true);
-    setCategory(val);
+    const newParams = new URLSearchParams(searchParams);
+    if (!val || val.trim().toLowerCase() === 'all categories') {
+      newParams.delete('category');
+    } else {
+      newParams.set('category', val.trim());
+    }
+    setSearchParams(newParams);
   };
 
   const handleSortChange = (val) => {
@@ -232,6 +243,8 @@ function Products() {
           )}
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }

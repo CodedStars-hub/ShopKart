@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import ShopKartLogo from '../components/ShopKartLogo';
 
 /**
  * Register Page
@@ -131,7 +132,9 @@ function Register() {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <div className="auth-brand-badge">🛒 ShopKart</div>
+          <div className="auth-brand-logo">
+            <ShopKartLogo variant="light" size="md" />
+          </div>
           <h1 className="auth-title">Create Account</h1>
           <p className="auth-subtitle">Join ShopKart today and start shopping</p>
         </div>

@@ -3,10 +3,11 @@ import { NavLink, Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { getWishlist } from '../services/wishlistService';
 import { useCart } from '../context/useCart';
+import ShopKartLogo from './ShopKartLogo';
 
 /**
- * Navbar component for ShopKart (Lab 01 - Lab 05).
- * Displays branding, navigation (Home | Products | Wishlist | Cart), and Logout button.
+ * Navbar component for ShopKart (Lab 01 - Lab 06).
+ * Displays approved ShopKart branding, navigation, and Logout button.
  * Cart count is dynamically consumed from CartContext (representing total units).
  */
 function Navbar({ wishlistCount }) {
@@ -57,9 +58,8 @@ function Navbar({ wishlistCount }) {
   return (
     <header className="navbar">
       <div className="navbar-container">
-        <Link to="/products" className="navbar-brand">
-          <span className="brand-logo-icon">🛒</span>
-          <span className="brand-name">ShopKart</span>
+        <Link to="/home" className="navbar-brand" aria-label="ShopKart Storefront">
+          <ShopKartLogo variant="light" size="sm" />
         </Link>
 
         <nav className="navbar-menu">

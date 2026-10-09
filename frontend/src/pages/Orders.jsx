@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { getMyOrders } from '../services/orderService';
+import { handleProductImageError } from '../utils/productImages';
 
 /**
  * My Orders Page (Lab 06)
@@ -154,9 +155,7 @@ function Orders() {
                                   src={item.image}
                                   alt={item.name}
                                   className="order-thumb-img"
-                                  onError={(e) => {
-                                    e.target.style.display = 'none';
-                                  }}
+                                  onError={(e) => handleProductImageError(e, item)}
                                 />
                               ) : (
                                 <span className="order-thumb-placeholder">🛍️</span>

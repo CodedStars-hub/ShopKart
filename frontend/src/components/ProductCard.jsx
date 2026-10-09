@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { addToWishlist, removeFromWishlist } from '../services/wishlistService';
 import { useCart } from '../context/useCart';
+import { handleProductImageError } from '../utils/productImages';
 
 /**
  * ProductCard Component (Lab 03, Lab 04 & Lab 05)
@@ -140,10 +141,7 @@ function ProductCard({
           alt={product.name}
           className="product-image"
           loading="lazy"
-          onError={(e) => {
-            e.currentTarget.src =
-              'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80';
-          }}
+          onError={(e) => handleProductImageError(e, product)}
         />
       </Link>
 

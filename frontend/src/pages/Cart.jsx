@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useCart } from '../context/useCart';
+import { handleProductImageError } from '../utils/productImages';
 
 /**
  * Shopping Cart Page (Lab 05)
@@ -144,10 +145,7 @@ function Cart() {
                             <img
                               src={product.image}
                               alt={product.name}
-                              onError={(e) => {
-                                e.currentTarget.src =
-                                  'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&auto=format&fit=crop&q=80';
-                              }}
+                              onError={(e) => handleProductImageError(e, product)}
                             />
                           </Link>
                           <div className="cart-item-details">

@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import { getProductById } from '../services/productService';
 import { getWishlist, addToWishlist, removeFromWishlist } from '../services/wishlistService';
 import { useCart } from '../context/useCart';
+import { handleProductImageError } from '../utils/productImages';
 
 /**
  * ProductDetails Page (Lab 03, Lab 04 & Lab 05)
@@ -170,10 +171,7 @@ function ProductDetails() {
                   src={product.image}
                   alt={product.name}
                   className="details-large-image"
-                  onError={(e) => {
-                    e.currentTarget.src =
-                      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80';
-                  }}
+                  onError={(e) => handleProductImageError(e, product)}
                 />
               </div>
 

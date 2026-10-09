@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { getOrderById } from '../services/orderService';
+import { handleProductImageError } from '../utils/productImages';
 
 /**
  * Order Success Page (Lab 06)
@@ -129,9 +130,7 @@ function OrderSuccess() {
                             src={item.image}
                             alt={item.name}
                             className="order-item-img"
-                            onError={(e) => {
-                              e.target.style.display = 'none';
-                            }}
+                            onError={(e) => handleProductImageError(e, item)}
                           />
                         ) : (
                           <div className="order-item-img-placeholder">🛍️</div>

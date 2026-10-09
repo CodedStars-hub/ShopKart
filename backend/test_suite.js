@@ -120,7 +120,7 @@ async function runTests() {
       description: "RGB mechanical keyboard with blue switches.",
       price: 2999,
       category: "Electronics",
-      image: "https://example.com/keyboard.jpg",
+      image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&auto=format&fit=crop&q=80",
       stock: 10,
     };
     const createProdRes = await fetch(`${BASE_URL}/products`, {
@@ -142,7 +142,7 @@ async function runTests() {
         description: "The complete guide to modern JavaScript.",
         price: 799,
         category: "Books",
-        image: "https://example.com/book.jpg",
+        image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop&q=80",
         stock: 25,
       }),
     });

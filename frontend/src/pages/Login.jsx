@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import api from '../services/api';
 import { useCart } from '../context/useCart';
+import ShopKartLogo from '../components/ShopKartLogo';
 
 /**
  * Login Page
@@ -117,7 +118,9 @@ function Login() {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <div className="auth-brand-badge">🛒 ShopKart</div>
+          <div className="auth-brand-logo">
+            <ShopKartLogo variant="light" size="md" />
+          </div>
           <h1 className="auth-title">Customer Login</h1>
           <p className="auth-subtitle">Sign in to access your ShopKart account</p>
         </div>

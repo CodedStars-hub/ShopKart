@@ -11,7 +11,7 @@ import { useCart } from '../context/useCart';
  */
 function Navbar({ wishlistCount }) {
   const navigate = useNavigate();
-  const { cartCount } = useCart();
+  const { cartCount, clearCart } = useCart();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [fetchedCount, setFetchedCount] = useState(null);
 
@@ -43,9 +43,11 @@ function Navbar({ wishlistCount }) {
     setIsLoggingOut(true);
     try {
       await api.post('/customers/logout');
+      if (clearCart) clearCart();
       navigate('/login', { replace: true });
     } catch (err) {
       console.error('Logout failed:', err);
+      if (clearCart) clearCart();
       navigate('/login', { replace: true });
     } finally {
       setIsLoggingOut(false);

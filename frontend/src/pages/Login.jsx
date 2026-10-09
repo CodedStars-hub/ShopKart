@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import api from '../services/api';
+import { useCart } from '../context/useCart';
 
 /**
  * Login Page
@@ -12,6 +13,7 @@ import api from '../services/api';
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { refreshCart } = useCart();
 
   // Controlled component state for form inputs
   const [formData, setFormData] = useState({
@@ -89,7 +91,8 @@ function Login() {
       const response = await api.post('/customers/login', payload);
 
       if (response.data?.success) {
-        // Successful login: navigate to protected /home
+        // Successful login: synchronize cart and navigate to protected /home
+        if (refreshCart) refreshCart();
         navigate('/home', { replace: true });
       }
     } catch (err) {

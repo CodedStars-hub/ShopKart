@@ -126,7 +126,7 @@ function ProductCard({
             onClick={handleWishlistClick}
             disabled={savingWishlist}
             title={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
-            aria-label="Wishlist action"
+            aria-label={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
           >
             {savingWishlist ? '⏳' : inWishlist ? '♥' : '♡'}
           </button>

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/customers",
+      "destination": "https://shop-kart-swart.vercel.app/customers"
+    },
+    {
+      "source": "/customers/:path*",
+      "destination": "https://shop-kart-swart.vercel.app/customers/:path*"
+    },
+    {
+      "source": "/products",
+      "destination": "https://shop-kart-swart.vercel.app/products"
+    },
+    {
+      "source": "/products/:path*",
+      "destination": "https://shop-kart-swart.vercel.app/products/:path*"
+    },
+    {
+      "source": "/cart",
+      "destination": "https://shop-kart-swart.vercel.app/cart"
+    },
+    {
+      "source": "/cart/:path*",
+      "destination": "https://shop-kart-swart.vercel.app/cart/:path*"
+    },
+    {
+      "source": "/wishlist",
+      "destination": "https://shop-kart-swart.vercel.app/wishlist"
+    },
+    {
+      "source": "/wishlist/:path*",
+      "destination": "https://shop-kart-swart.vercel.app/wishlist/:path*"
+    },
+    {
+      "source": "/orders",
+      "destination": "https://shop-kart-swart.vercel.app/orders"
+    },
+    {
+      "source": "/orders/:path*",
+      "destination": "https://shop-kart-swart.vercel.app/orders/:path*"
+    }
+  ]
+}
